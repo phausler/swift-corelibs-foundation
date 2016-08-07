@@ -56,12 +56,12 @@ open class NSArray : NSObject, NSCopying, NSMutableCopying, NSSecureCoding, NSCo
             objects.deallocate(capacity: Int(cnt))
         } else if type(of: aDecoder) == NSKeyedUnarchiver.self || aDecoder.containsValue(forKey: "NS.objects") {
             let objects = aDecoder._decodeArrayOfObjectsForKey("NS.objects")
-            self.init(array: objects)
+            self.init(array: objects as! [NSObject])
         } else {
             var objects = [AnyObject]()
             var count = 0
             while let object = aDecoder.decodeObject(forKey: "NS.object.\(count)") {
-                objects.append(object)
+                objects.append(object as! NSObject)
                 count += 1
             }
             self.init(array: objects)
