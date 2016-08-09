@@ -216,7 +216,7 @@ open class NSURL: NSObject, NSSecureCoding, NSCopying {
         return self
     }
     
-    public static func supportsSecureCoding() -> Bool { return true }
+    public static var supportsSecureCoding: Bool { return true }
     
     public convenience required init?(coder aDecoder: NSCoder) {
         if aDecoder.allowsKeyedCoding {
@@ -840,7 +840,7 @@ open class NSURLQueryItem : NSObject, NSSecureCoding, NSCopying {
         return self
     }
     
-    public static func supportsSecureCoding() -> Bool {
+    public static var supportsSecureCoding: Bool {
         return true
     }
     
