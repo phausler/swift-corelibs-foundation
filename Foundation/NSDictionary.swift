@@ -418,7 +418,7 @@ open class NSDictionary : NSObject, NSCopying, NSMutableCopying, NSSecureCoding,
         enumerateKeysAndObjects([], using: block)
     }
 
-    public func enumerateKeysAndObjects(_ opts: EnumerationOptions = [], using block: (Any, Any, UnsafeMutablePointer<ObjCBool>) -> Swift.Void) {
+    public func enumerateKeysAndObjects(_ opts: NSEnumerationOptions = [], using block: (Any, Any, UnsafeMutablePointer<ObjCBool>) -> Swift.Void) {
         let count = self.count
         var keys = [Any]()
         var objects = [Any]()
@@ -450,7 +450,7 @@ open class NSDictionary : NSObject, NSCopying, NSMutableCopying, NSSecureCoding,
         return keysOfEntries([], passingTest: predicate)
     }
 
-    open func keysOfEntries(_ opts: EnumerationOptions = [], passingTest predicate: (Any, Any, UnsafeMutablePointer<ObjCBool>) -> Bool) -> Set<NSObject> {
+    open func keysOfEntries(_ opts: NSEnumerationOptions = [], passingTest predicate: (Any, Any, UnsafeMutablePointer<ObjCBool>) -> Bool) -> Set<NSObject> {
         var matching = Set<NSObject>()
         enumerateKeysAndObjects(opts) { key, value, stop in
             if predicate(key, value, stop) {
