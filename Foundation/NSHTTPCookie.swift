@@ -388,7 +388,7 @@ open class HTTPCookie : NSObject {
         //bake the cookies
         var httpCookies: [HTTPCookie] = []
         for i in 0..<cookieIndices.count-1 {
-            if let aCookie = createHttpCookie(url: url, pairs: nameValuePairs, start: cookieIndices[i], end: cookieIndices[i+1]) {
+            if let aCookie = createHttpCookie(url: url, pairs: nameValuePairs[cookieIndices[i]..<cookieIndices[i+1]]) {
                 httpCookies.append(aCookie)
             }
         }
@@ -579,7 +579,7 @@ open class HTTPCookie : NSObject {
 }
 
 //utils for cookie parsing
-internal extension String {
+fileprivate extension String {
     func trim() -> String {
         return self.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines())
     }
