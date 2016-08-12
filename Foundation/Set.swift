@@ -12,7 +12,7 @@ import CoreFoundation
 extension Set : _ObjectTypeBridgeable {
     public typealias _ObjectType = NSSet
     public func _bridgeToObjectiveC() -> _ObjectType {
-        let buffer = UnsafeMutablePointer<AnyObject?>.allocate(capacity: count)
+        let buffer = UnsafeMutablePointer<AnyObject>.allocate(capacity: count)
         
         for (idx, obj) in enumerated() {
             buffer.advanced(by: idx).initialize(to: (obj as! _ObjectBridgeable)._bridgeToAnyObject())

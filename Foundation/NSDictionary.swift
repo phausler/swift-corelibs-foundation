@@ -22,11 +22,14 @@ open class NSDictionary : NSObject, NSCopying, NSMutableCopying, NSSecureCoding,
         return _storage.count
     }
     
-    open func objectForKey(_ aKey: AnyObject) -> AnyObject? {
+    open func object(forKey aKey: Any) -> Any? {
         guard type(of: self) === NSDictionary.self || type(of: self) === NSMutableDictionary.self else {
             NSRequiresConcreteImplementation()
         }
-        return _storage[aKey as! NSObject]
+        if let val = _storage[_SwiftValue.store(aKey)] {
+            return _SwiftValue.fetch(val)
+        }
+        return nil
     }
     
     open func keyEnumerator() -> NSEnumerator {
@@ -40,7 +43,7 @@ open class NSDictionary : NSObject, NSCopying, NSMutableCopying, NSSecureCoding,
         self.init(objects: [], forKeys: [], count: 0)
     }
     
-    public required init(objects: UnsafePointer<AnyObject>, forKeys keys: UnsafePointer<NSObject>, count cnt: Int) {
+    public required init(objects: UnsafePointer<AnyObject>!, forKeys keys: UnsafePointer<NSObject>!, count cnt: Int) {
         for idx in 0..<cnt {
             let key = keys[idx].copy()
             let value = objects[idx]
@@ -127,10 +130,10 @@ open class NSDictionary : NSObject, NSCopying, NSMutableCopying, NSSecureCoding,
             mutableDictionary._storage = self._storage
             return mutableDictionary
         }
-        return NSMutableDictionary(objects: self.allValues, forKeys: self.allKeys.map({ $0 as! NSObject}))
+        return NSMutableDictionary(objects: self.allValues, forKeys: self.allKeys.map { _SwiftValue.store($0) } )
     }
 
-    public convenience init(object: AnyObject, forKey key: NSCopying) {
+    public convenience init(object: Any, forKey key: NSCopying) {
         self.init(objects: [object], forKeys: [key as! NSObject])
     }
     
@@ -154,12 +157,12 @@ open class NSDictionary : NSObject, NSCopying, NSMutableCopying, NSSecureCoding,
 //        self.init(objects: values, forKeys: keys)
 //    }
     
-    public convenience init(objects: [AnyObject], forKeys keys: [NSObject]) {
+    public convenience init(objects: [Any], forKeys keys: [NSObject]) {
         let keyBuffer = UnsafeMutablePointer<NSObject>.allocate(capacity: keys.count)
         keyBuffer.initialize(from: keys)
 
         let valueBuffer = UnsafeMutablePointer<AnyObject>.allocate(capacity: objects.count)
-        valueBuffer.initialize(from: objects)
+        valueBuffer.initialize(from: objects.map { _SwiftValue.store($0) })
 
         self.init(objects: valueBuffer, forKeys:keyBuffer, count: keys.count)
         
@@ -181,11 +184,11 @@ open class NSDictionary : NSObject, NSCopying, NSMutableCopying, NSSecureCoding,
         return self.count
     }
 
-    open var allKeys: [AnyObject] {
+    open var allKeys: [Any] {
         if type(of: self) === NSDictionary.self || type(of: self) === NSMutableDictionary.self {
             return _storage.keys.map { $0 }
         } else {
-            var keys = [AnyObject]()
+            var keys = [Any]()
             let enumerator = keyEnumerator()
             while let key = enumerator.nextObject() {
                 keys.append(key)
@@ -194,14 +197,14 @@ open class NSDictionary : NSObject, NSCopying, NSMutableCopying, NSSecureCoding,
         }
     }
     
-    open var allValues: [AnyObject] {
+    open var allValues: [Any] {
         if type(of: self) === NSDictionary.self || type(of: self) === NSMutableDictionary.self {
             return _storage.values.map { $0 }
         } else {
-            var values = [AnyObject]()
+            var values = [Any]()
             let enumerator = keyEnumerator()
             while let key = enumerator.nextObject() {
-                values.append(objectForKey(key)!)
+                values.append(object(forKey: key)!)
             }
             return values
         }
@@ -210,7 +213,7 @@ open class NSDictionary : NSObject, NSCopying, NSMutableCopying, NSSecureCoding,
     /// Alternative pseudo funnel method for fastpath fetches from dictionaries
     /// - Experiment: This is a draft API currently under consideration for official import into Foundation
     /// - Note: Since this API is under consideration it may be either removed or revised in the near future
-    open func getObjects(_ objects: inout [AnyObject], andKeys keys: inout [AnyObject], count: Int) {
+    open func getObjects(_ objects: inout [Any], andKeys keys: inout [Any], count: Int) {
         if type(of: self) === NSDictionary.self || type(of: self) === NSMutableDictionary.self {
             for (key, value) in _storage {
                 keys.append(key)
@@ -220,23 +223,26 @@ open class NSDictionary : NSObject, NSCopying, NSMutableCopying, NSSecureCoding,
             
             let enumerator = keyEnumerator()
             while let key = enumerator.nextObject() {
-                let value = objectForKey(key)!
+                let value = object(forKey: key)!
                 keys.append(key)
                 objects.append(value)
             }
         }
     }
     
-    open subscript (key: AnyObject) -> AnyObject? {
-        return objectForKey(key)
+    open subscript (key: Any) -> Any? {
+        return object(forKey: key)
     }
     
     
-    open func allKeys(for anObject: AnyObject) -> [AnyObject] {
-        var matching = Array<AnyObject>()
+    open func allKeys(for anObject: Any) -> [Any] {
+        var matching = Array<Any>()
         enumerateKeysAndObjects([]) { key, value, _ in
-            if value === anObject {
-                matching.append(key)
+            if let val = value as? AnyHashable,
+               let obj = anObject as? AnyHashable {
+                if val == obj {
+                    matching.append(key)
+                }
             }
         }
         return matching
@@ -308,7 +314,7 @@ open class NSDictionary : NSObject, NSCopying, NSMutableCopying, NSSecureCoding,
 
             line += " = "
 
-            let object = objectForKey(key)!
+            let object = self.object(forKey: key)!
             if object is NSArray {
                 line += (object as! NSArray).description(withLocale: locale, indent: level + 1)
             } else if object is Date {
@@ -335,15 +341,18 @@ open class NSDictionary : NSObject, NSCopying, NSMutableCopying, NSSecureCoding,
         return lines.joined(separator: "\n")
     }
 
-    open func isEqual(to otherDictionary: [NSObject : AnyObject]) -> Bool {
+    open func isEqual(to otherDictionary: [AnyHashable : Any]) -> Bool {
         if count != otherDictionary.count {
             return false
         }
         
         for key in keyEnumerator() {
-            if let otherValue = otherDictionary[key as! NSObject] as? NSObject {
-                let value = objectForKey(key as! NSObject)! as! NSObject
-                if otherValue != value {
+            if let otherValue = otherDictionary[key as! AnyHashable] as? AnyHashable {
+                if let value = object(forKey: key)! as? AnyHashable {
+                    if otherValue != value {
+                        return false
+                    }
+                } else {
                     return false
                 }
             } else {
@@ -356,10 +365,10 @@ open class NSDictionary : NSObject, NSCopying, NSMutableCopying, NSSecureCoding,
     
     public struct Iterator : IteratorProtocol {
         let dictionary : NSDictionary
-        var keyGenerator : Array<AnyObject>.Iterator
-        public mutating func next() -> (key: AnyObject, value: AnyObject)? {
+        var keyGenerator : Array<Any>.Iterator
+        public mutating func next() -> (key: Any, value: Any)? {
             if let key = keyGenerator.next() {
-                return (key, dictionary.objectForKey(key)!)
+                return (key, dictionary.object(forKey: key)!)
             } else {
                 return nil
             }
@@ -372,10 +381,10 @@ open class NSDictionary : NSObject, NSCopying, NSMutableCopying, NSSecureCoding,
     
     internal struct ObjectGenerator: IteratorProtocol {
         let dictionary : NSDictionary
-        var keyGenerator : Array<AnyObject>.Iterator
-        mutating func next() -> AnyObject? {
+        var keyGenerator : Array<Any>.Iterator
+        mutating func next() -> Any? {
             if let key = keyGenerator.next() {
-                return dictionary.objectForKey(key)!
+                return dictionary.object(forKey: key)!
             } else {
                 return nil
             }
@@ -390,10 +399,10 @@ open class NSDictionary : NSObject, NSCopying, NSMutableCopying, NSSecureCoding,
         return NSGeneratorEnumerator(ObjectGenerator(self))
     }
     
-    open func objects(forKeys keys: [AnyObject], notFoundMarker marker: AnyObject) -> [AnyObject] {
-        var objects = [AnyObject]()
+    open func objects(forKeys keys: [Any], notFoundMarker marker: Any) -> [Any] {
+        var objects = [Any]()
         for key in keys {
-            if let object = objectForKey(key) {
+            if let object = object(forKey: key) {
                 objects.append(object)
             } else {
                 objects.append(marker)
@@ -405,14 +414,14 @@ open class NSDictionary : NSObject, NSCopying, NSMutableCopying, NSSecureCoding,
     open func write(toFile path: String, atomically useAuxiliaryFile: Bool) -> Bool { NSUnimplemented() }
     open func write(to url: URL, atomically: Bool) -> Bool { NSUnimplemented() } // the atomically flag is ignored if url of a type that cannot be written atomically.
     
-    public func enumerateKeysAndObjects(_ block: (AnyObject, AnyObject, UnsafeMutablePointer<ObjCBool>) -> Void) {
+    public func enumerateKeysAndObjects(_ block: (Any, Any, UnsafeMutablePointer<ObjCBool>) -> Void) {
         enumerateKeysAndObjects([], using: block)
     }
 
-    public func enumerateKeysAndObjects(_ opts: EnumerationOptions = [], using block: (AnyObject, AnyObject, UnsafeMutablePointer<ObjCBool>) -> Swift.Void) {
+    public func enumerateKeysAndObjects(_ opts: EnumerationOptions = [], using block: (Any, Any, UnsafeMutablePointer<ObjCBool>) -> Swift.Void) {
         let count = self.count
-        var keys = [AnyObject]()
-        var objects = [AnyObject]()
+        var keys = [Any]()
+        var objects = [Any]()
         getObjects(&objects, andKeys: &keys, count: count)
         var stop = ObjCBool(false)
         for idx in 0..<count {
@@ -426,22 +435,22 @@ open class NSDictionary : NSObject, NSCopying, NSMutableCopying, NSSecureCoding,
         }
     }
     
-    open func keysSortedByValue(comparator cmptr: (AnyObject, AnyObject) -> ComparisonResult) -> [AnyObject] {
+    open func keysSortedByValue(comparator cmptr: (Any, Any) -> ComparisonResult) -> [Any] {
         return keysSortedByValue([], usingComparator: cmptr)
     }
 
-    open func keysSortedByValue(_ opts: SortOptions = [], usingComparator cmptr: (AnyObject, AnyObject) -> ComparisonResult) -> [AnyObject] {
+    open func keysSortedByValue(_ opts: SortOptions = [], usingComparator cmptr: (Any, Any) -> ComparisonResult) -> [Any] {
         let sorted = allKeys.sorted { lhs, rhs in
             return cmptr(lhs, rhs) == .orderedSame
         }
         return sorted
     }
 
-    open func keysOfEntries(passingTest predicate: (AnyObject, AnyObject, UnsafeMutablePointer<ObjCBool>) -> Bool) -> Set<NSObject> {
+    open func keysOfEntries(passingTest predicate: (Any, Any, UnsafeMutablePointer<ObjCBool>) -> Bool) -> Set<NSObject> {
         return keysOfEntries([], passingTest: predicate)
     }
 
-    open func keysOfEntries(_ opts: EnumerationOptions = [], passingTest predicate: (AnyObject, AnyObject, UnsafeMutablePointer<ObjCBool>) -> Bool) -> Set<NSObject> {
+    open func keysOfEntries(_ opts: EnumerationOptions = [], passingTest predicate: (Any, Any, UnsafeMutablePointer<ObjCBool>) -> Bool) -> Set<NSObject> {
         var matching = Set<NSObject>()
         enumerateKeysAndObjects(opts) { key, value, stop in
             if predicate(key, value, stop) {
@@ -455,12 +464,12 @@ open class NSDictionary : NSObject, NSCopying, NSMutableCopying, NSSecureCoding,
         return CFDictionaryGetTypeID()
     }
     
-    required public convenience init(dictionaryLiteral elements: (NSObject, AnyObject)...) {
+    required public convenience init(dictionaryLiteral elements: (Any, Any)...) {
         var keys = [NSObject]()
-        var values = [AnyObject]()
+        var values = [Any]()
 
         for (key, value) in elements {
-            keys.append(key)
+            keys.append(_SwiftValue.store(key))
             values.append(value)
         }
         
@@ -479,7 +488,7 @@ extension NSMutableDictionary {
 
 extension CFDictionary : _NSBridgable, _SwiftBridgable {
     internal var _nsObject: NSDictionary { return unsafeBitCast(self, to: NSDictionary.self) }
-    internal var _swiftObject: [NSObject: AnyObject] { return _nsObject._swiftObject }
+    internal var _swiftObject: [AnyHashable: Any] { return _nsObject._swiftObject }
 }
 
 extension Dictionary : _NSBridgable, _CFBridgable {
@@ -489,21 +498,20 @@ extension Dictionary : _NSBridgable, _CFBridgable {
 
 open class NSMutableDictionary : NSDictionary {
     
-    open func removeObject(forKey aKey: AnyObject) {
+    open func removeObject(forKey aKey: Any) {
         guard type(of: self) === NSDictionary.self || type(of: self) === NSMutableDictionary.self else {
             NSRequiresConcreteImplementation()
         }
 
-        if let key = aKey as? NSObject {
-            _storage.removeValue(forKey: key)
-        }
+        _storage.removeValue(forKey: _SwiftValue.store(aKey))
     }
     
-    open func setObject(_ anObject: AnyObject, forKey aKey: NSObject) {
+    /// - Note: this diverges from the darwin version that requires NSCopying (this differential preserves allowing strings and such to be used as keys)
+    open func setObject(_ anObject: Any, forKey aKey: AnyHashable) {
         guard type(of: self) === NSDictionary.self || type(of: self) === NSMutableDictionary.self else {
             NSRequiresConcreteImplementation()
         }
-        _storage[aKey] = anObject
+        _storage[(aKey as! NSObject)] = _SwiftValue.store(anObject)
     }
     
     public convenience required init() {
@@ -514,27 +522,25 @@ open class NSMutableDictionary : NSDictionary {
         self.init(objects: [], forKeys: [], count: 0)
     }
     
-    public required init(objects: UnsafePointer<AnyObject>, forKeys keys: UnsafePointer<NSObject>, count cnt: Int) {
+    public required init(objects: UnsafePointer<AnyObject>!, forKeys keys: UnsafePointer<NSObject>!, count cnt: Int) {
         super.init(objects: objects, forKeys: keys, count: cnt)
     }
     
     public convenience init?(contentsOfFile path: String) { NSUnimplemented() }
     public convenience init?(contentsOfURL url: URL) { NSUnimplemented() }
-
 }
 
 extension NSMutableDictionary {
     
-    public func addEntriesFromDictionary(_ otherDictionary: [NSObject : AnyObject]) {
+    open func addEntries(from otherDictionary: [AnyHashable : Any]) {
         for (key, obj) in otherDictionary {
             setObject(obj, forKey: key)
         }
     }
     
-    public func removeAllObjects() {
+    open func removeAllObjects() {
         if type(of: self) === NSDictionary.self || type(of: self) === NSMutableDictionary.self {
             _storage.removeAll()
-//            CFDictionaryRemoveAllValues(unsafeBitCast(self, CFMutableDictionaryRef.self))
         } else {
             for key in allKeys {
                 removeObject(forKey: key)
@@ -542,26 +548,24 @@ extension NSMutableDictionary {
         }
     }
     
-    public func removeObjectsForKeys(_ keyArray: [AnyObject]) {
+    open func removeObjects(forKeys keyArray: [Any]) {
         for key in keyArray {
             removeObject(forKey: key)
         }
     }
     
-    public func setDictionary(_ otherDictionary: [NSObject : AnyObject]) {
-        if type(of: self) === NSDictionary.self || type(of: self) === NSMutableDictionary.self {
-            _storage = otherDictionary
-        } else {
-            removeAllObjects()
-            for (key, obj) in otherDictionary {
-                setObject(obj, forKey: key)
-            }
+    open func setDictionary(_ otherDictionary: [AnyHashable : Any]) {
+        removeAllObjects()
+        for (key, obj) in otherDictionary {
+            setObject(obj, forKey: key)
         }
+    
     }
     
-    public subscript (key: NSObject) -> AnyObject? {
+    /// - Note: See setObject(_:,forKey:) for details on the differential here
+    public subscript (key: AnyHashable) -> Any? {
         get {
-            return objectForKey(key)
+            return object(forKey: key)
         }
         set {
             if let val = newValue {

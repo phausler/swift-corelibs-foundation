@@ -14,7 +14,7 @@ open class Predicate : NSObject, NSSecureCoding, NSCopying {
 
     private enum PredicateKind {
         case boolean(Bool)
-        case block((AnyObject?, [String : AnyObject]?) -> Bool)
+        case block((Any?, [String : Any]?) -> Bool)
         // TODO: case for init(format:argumentArray:)
         // TODO: case for init(fromMetadataQueryString:)
     }
@@ -42,7 +42,7 @@ open class Predicate : NSObject, NSSecureCoding, NSCopying {
     }
     
     // Parse predicateFormat and return an appropriate predicate
-    public init(format predicateFormat: String, argumentArray arguments: [AnyObject]?) { NSUnimplemented() }
+    public init(format predicateFormat: String, argumentArray arguments: [Any]?) { NSUnimplemented() }
     
     public init?(fromMetadataQueryString queryString: String) { NSUnimplemented() }
     
@@ -51,20 +51,20 @@ open class Predicate : NSObject, NSSecureCoding, NSCopying {
         super.init()
     } // return predicates that always evaluate to true/false
 
-    public init(block: @escaping (AnyObject?, [String : AnyObject]?) -> Bool) {
+    public init(block: @escaping (Any?, [String : Any]?) -> Bool) {
         kind = .block(block)
         super.init()
     }
     
     open var predicateFormat: String  { NSUnimplemented() } // returns the format string of the predicate
     
-    open func withSubstitutionVariables(_ variables: [String : AnyObject]) -> Self { NSUnimplemented() } // substitute constant values for variables
+    open func withSubstitutionVariables(_ variables: [String : Any]) -> Self { NSUnimplemented() } // substitute constant values for variables
     
-    open func evaluate(with object: AnyObject?) -> Bool {
+    open func evaluate(with object: Any?) -> Bool {
         return evaluate(with: object, substitutionVariables: nil)
     } // evaluate a predicate against a single object
     
-    open func evaluate(with object: AnyObject?, substitutionVariables bindings: [String : AnyObject]?) -> Bool {
+    open func evaluate(with object: Any?, substitutionVariables bindings: [String : Any]?) -> Bool {
         if bindings != nil {
             NSUnimplemented()
         }
@@ -81,7 +81,7 @@ open class Predicate : NSObject, NSSecureCoding, NSCopying {
 }
 
 extension NSArray {
-    public func filteredArrayUsingPredicate(_ predicate: Predicate) -> [AnyObject] {
+    public func filteredArrayUsingPredicate(_ predicate: Predicate) -> [Any] {
         return allObjects.filter({ object in
             return predicate.evaluate(with: object)
         })
@@ -135,6 +135,6 @@ extension NSMutableOrderedSet {
                 indexesToRemove.insert(index)
             }
         }
-        self.removeObjectsAtIndexes(indexesToRemove)
+        self.removeObjects(at: indexesToRemove)
     } // evaluate a predicate against an ordered set of objects and filter the mutable ordered set directly
 }

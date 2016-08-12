@@ -877,13 +877,13 @@ extension FileManager {
             self.innerEnumerator = ie
         }
         
-        override func nextObject() -> AnyObject? {
+        override func nextObject() -> Any? {
             let o = innerEnumerator.nextObject()
             guard let url = o as? NSURL else {
                 return nil
             }
             let path = url.path!.replacingOccurrences(of: baseURL.path!+"/", with: "")
-            return NSString(string: path)
+            return path
         }
 
     }
@@ -926,7 +926,7 @@ extension FileManager {
             }
         }
         
-        override func nextObject() -> AnyObject? {
+        override func nextObject() -> Any? {
             if let stream = _stream {
                 
                 if !_gotRoot  {
@@ -947,7 +947,7 @@ extension FileManager {
                             fallthrough
                         case FTS_DEFAULT, FTS_F, FTS_NSOK, FTS_SL, FTS_SLNONE:
                             let str = NSString(bytes: current.pointee.fts_path, length: Int(strlen(current.pointee.fts_path)), encoding: String.Encoding.utf8.rawValue)!._swiftObject
-                            return NSURL(fileURLWithPath: str)
+                            return URL(fileURLWithPath: str)
                         case FTS_DNR, FTS_ERR, FTS_NS:
                             let keepGoing : Bool
                             if let handler = _errorHandler {

@@ -326,7 +326,7 @@ private struct JSONWriter {
             } else {
                 writer(",")
             }
-            try serializeJSON(elem)
+            try serializeJSON(_SwiftValue.store(elem))
         }
         if pretty {
             writer("\n")

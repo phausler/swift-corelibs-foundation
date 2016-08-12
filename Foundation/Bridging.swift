@@ -10,7 +10,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-/// - Note: This is a similar interface to the _ObjectiveCBridgeable protocol
+// Support protocols for casting
 public protocol _ObjectBridgeable {
     func _bridgeToAnyObject() -> AnyObject
 }
@@ -19,6 +19,7 @@ public protocol _StructBridgeable {
     func _bridgeToAny() -> Any
 }
 
+/// - Note: This is a similar interface to the _ObjectiveCBridgeable protocol
 public protocol _ObjectTypeBridgeable : _ObjectBridgeable {
     associatedtype _ObjectType : AnyObject
     
@@ -32,12 +33,15 @@ public protocol _ObjectTypeBridgeable : _ObjectBridgeable {
     static func _unconditionallyBridgeFromObjectiveC(_ source: _ObjectType?) -> Self
 }
 
+/// - Note: This does not exist currently on Darwin but it is the inverse corrilation to the bridge types such that a 
+/// reference type can be converted via a callout to a conversion method.
 public protocol _StructTypeBridgeable {
     associatedtype _StructType
     
     func _bridgeToSwift() -> _StructType
 }
 
+// Default adoption of the type specific variants to the Any variant
 extension _ObjectTypeBridgeable {
     public func _bridgeToAnyObject() -> AnyObject {
         return _bridgeToObjectiveC()
@@ -50,7 +54,7 @@ extension _StructTypeBridgeable {
     }
 }
 
-
+// slated for removal, these are the swift-corelibs-only variant of the _ObjectiveCBridgeable
 internal protocol _CFBridgable {
     associatedtype CFType
     var _cfObject: CFType { get }

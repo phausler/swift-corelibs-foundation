@@ -187,7 +187,7 @@ public struct EnumerationOptions: OptionSet {
     public static let reverse = EnumerationOptions(rawValue: UInt(1 << 1))
 }
 
-public typealias Comparator = (AnyObject, AnyObject) -> ComparisonResult
+public typealias Comparator = (Any, Any) -> ComparisonResult
 
 public let NSNotFound: Int = Int.max
 
@@ -216,21 +216,6 @@ internal struct _CFInfo {
         info = UInt32((UInt32(typeID) << 8) | (UInt32(0x80)))
         pad = extra
     }
-}
-
-internal protocol _CFBridgable {
-    associatedtype CFType
-    var _cfObject: CFType { get }
-}
-
-internal protocol  _SwiftBridgable {
-    associatedtype SwiftType
-    var _swiftObject: SwiftType { get }
-}
-
-internal protocol _NSBridgable {
-    associatedtype NSType
-    var _nsObject: NSType { get }
 }
 
 #if os(OSX) || os(iOS)

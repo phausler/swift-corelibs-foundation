@@ -1117,8 +1117,8 @@ open class NSURLComponents: NSObject, NSCopying {
                 
                 return (0..<count).map { idx in
                     let oneEntry = unsafeBitCast(CFArrayGetValueAtIndex(queryArray, idx), to: NSDictionary.self)
-                    let entryName = oneEntry.objectForKey("name"._cfObject) as! String
-                    let entryValue = oneEntry.objectForKey("value"._cfObject) as? String
+                    let entryName = oneEntry.object(forKey: "name"._cfObject) as! String
+                    let entryValue = oneEntry.object(forKey: "value"._cfObject) as? String
                     return URLQueryItem(name: entryName, value: entryValue)
                 }
             } else {
