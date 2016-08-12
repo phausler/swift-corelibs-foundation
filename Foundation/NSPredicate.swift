@@ -82,7 +82,7 @@ open class Predicate : NSObject, NSSecureCoding, NSCopying {
 
 extension NSArray {
     public func filteredArrayUsingPredicate(_ predicate: Predicate) -> [AnyObject] {
-        return bridge().filter({ object in
+        return allObjects.filter({ object in
             return predicate.evaluate(with: object)
         })
     } // evaluate a predicate against an array of objects and return a filtered array
@@ -102,9 +102,10 @@ extension NSMutableArray {
 
 extension NSSet {
     public func filteredSetUsingPredicate(_ predicate: Predicate) -> Set<NSObject> {
-        return Set(bridge().filter({ object in
+        let objs = allObjects.filter { (object) -> Bool in
             return predicate.evaluate(with: object)
-        }))
+        }
+        return Set(objs.map { $0 as! NSObject })
     } // evaluate a predicate against a set of objects and return a filtered set
 }
 
@@ -120,7 +121,7 @@ extension NSMutableSet {
 
 extension NSOrderedSet {
     public func filteredOrderedSetUsingPredicate(_ predicate: Predicate) -> NSOrderedSet {
-        return NSOrderedSet(array: self._orderedStorage.bridge().filter({ object in
+        return NSOrderedSet(array: self._orderedStorage.filter({ object in
             return predicate.evaluate(with: object)
         }))
     } // evaluate a predicate against an ordered set of objects and return a filtered ordered set

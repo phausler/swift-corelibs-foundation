@@ -643,16 +643,3 @@ public func ==(lhs: URL, rhs: URL) -> Bool {
     return lhs.reference.isEqual(rhs.reference)
 }
 
-extension URL : Bridgeable {
-    public typealias BridgeType = NSURL
-    public func bridge() -> BridgeType {
-        return _nsObject
-    }
-}
-
-extension NSURL : Bridgeable {
-    public typealias BridgeType = URL
-    public func bridge() -> BridgeType {
-        return _swiftObject
-    }
-}

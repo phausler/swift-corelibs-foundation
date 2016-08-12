@@ -284,7 +284,7 @@ open class XMLNode: NSObject, NSCopying {
             if let value = _objectValue {
                 return value
             } else {
-                return stringValue?._bridgeToObject()
+                return stringValue?._bridgeToObjectiveC()
             }
         }
         set {

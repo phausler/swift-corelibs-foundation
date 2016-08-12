@@ -53,24 +53,24 @@ open class NSNotification: NSObject, NSCopying, NSCoding {
             }
             let object = aDecoder.decodeObject(forKey: "NS.object")
 //            let userInfo = aDecoder.decodeObjectOfClass(NSDictionary.self, forKey: "NS.userinfo")
-            self.init(name: Name(rawValue: name.bridge()), object: object, userInfo: nil)
+            self.init(name: Name(rawValue: String._unconditionallyBridgeFromObjectiveC(name)), object: object, userInfo: nil)
         } else {
             guard let name = aDecoder.decodeObject() as? NSString else {
                 return nil
             }
             let object = aDecoder.decodeObject()
 //            let userInfo = aDecoder.decodeObject() as? NSDictionary
-            self.init(name: Name(rawValue: name.bridge()), object: object, userInfo: nil)
+            self.init(name: Name(rawValue: String._unconditionallyBridgeFromObjectiveC(name)), object: object, userInfo: nil)
         }
     }
     
     open func encode(with aCoder: NSCoder) {
         if aCoder.allowsKeyedCoding {
-            aCoder.encode(self.name.rawValue.bridge(), forKey:"NS.name")
+            aCoder.encode(self.name.rawValue._bridgeToObjectiveC(), forKey:"NS.name")
             aCoder.encode(self.object, forKey:"NS.object")
 //            aCoder.encodeObject(self.userInfo?.bridge(), forKey:"NS.userinfo")
         } else {
-            aCoder.encode(self.name.rawValue.bridge())
+            aCoder.encode(self.name.rawValue._bridgeToObjectiveC())
             aCoder.encode(self.object)
 //            aCoder.encodeObject(self.userInfo?.bridge())
         }

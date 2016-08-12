@@ -315,7 +315,7 @@ public extension NSString {
     
     public var stringByStandardizingPath: String {
         let expanded = stringByExpandingTildeInPath
-        var resolved = expanded.bridge().stringByResolvingSymlinksInPath
+        var resolved = expanded._bridgeToObjectiveC().stringByResolvingSymlinksInPath
         
         let automount = "/var/automount"
         resolved = resolved._tryToRemovePathPrefix(automount) ?? resolved
@@ -343,10 +343,10 @@ public extension NSString {
                 break
                 
             case ".." where isAbsolutePath:
-                resolvedPath = resolvedPath.bridge().stringByDeletingLastPathComponent
+                resolvedPath = resolvedPath._bridgeToObjectiveC().stringByDeletingLastPathComponent
                 
             default:
-                resolvedPath = resolvedPath.bridge().stringByAppendingPathComponent(component)
+                resolvedPath = resolvedPath._bridgeToObjectiveC().stringByAppendingPathComponent(component)
                 if let destination = FileManager.default._tryToResolveTrailingSymlinkInPath(resolvedPath) {
                     resolvedPath = destination
                 }
@@ -368,7 +368,7 @@ public extension NSString {
     
     /// - Experiment: This is a draft API currently under consideration for official import into Foundation
     /// - Note: Since this API is under consideration it may be either removed or revised in the near future
-    public func completePathIntoString(_ outputName: inout NSString?, caseSensitive flag: Bool, matchesIntoArray outputArray: inout [NSString], filterTypes: [String]?) -> Int {
+    public func completePathIntoString(_ outputName: inout String?, caseSensitive flag: Bool, matchesIntoArray outputArray: inout [String], filterTypes: [String]?) -> Int {
         let path = _swiftObject
         guard !path.isEmpty else {
             return 0
@@ -412,11 +412,11 @@ public extension NSString {
             outputName = "/"
         } else {            
             if let lcp = _longestCommonPrefix(matches, caseSensitive: flag) {
-                outputName = (commonPath + lcp).bridge()
+                outputName = (commonPath + lcp)
             }
         }
         
-        outputArray = matches.map({ (commonPath + $0).bridge() })
+        outputArray = matches.map({ (commonPath + $0) })
         
         return matches.count
     }
@@ -447,7 +447,7 @@ public extension NSString {
                     if prependWith.isEmpty {
                         result.append(itemName!)
                     } else {
-                        result.append(prependWith.bridge().stringByAppendingPathComponent(itemName!))
+                        result.append(prependWith._bridgeToObjectiveC().stringByAppendingPathComponent(itemName!))
                     }
                 }
             }
@@ -478,7 +478,7 @@ public extension NSString {
         if caseSensetive {
             return { $0 != nil && $0!.hasPrefix(thePrefix) }
         } else {
-            return { $0 != nil && $0!.bridge().range(of: thePrefix, options: .caseInsensitive).location == 0 }
+            return { $0 != nil && $0!._bridgeToObjectiveC().range(of: thePrefix, options: .caseInsensitive).location == 0 }
         }
     }
     

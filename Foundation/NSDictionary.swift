@@ -10,77 +10,6 @@
 
 import CoreFoundation
 
-extension Dictionary : _ObjectTypeBridgeable {
-    public func _bridgeToObject() -> NSDictionary {
-        let keyBuffer = UnsafeMutablePointer<NSObject>.allocate(capacity: count)
-        let valueBuffer = UnsafeMutablePointer<AnyObject>.allocate(capacity: count)
-        
-        var idx = 0
-        
-        self.forEach {
-            let key = _NSObjectRepresentableBridge($0.0)
-            let value = _NSObjectRepresentableBridge($0.1)
-            keyBuffer.advanced(by: idx).initialize(to: key)
-            valueBuffer.advanced(by: idx).initialize(to: value)
-            idx += 1
-        }
-        
-        let dict = NSDictionary(objects: valueBuffer, forKeys: keyBuffer, count: count)
-        
-        keyBuffer.deinitialize(count: count)
-        valueBuffer.deinitialize(count: count)
-        keyBuffer.deallocate(capacity: count)
-        valueBuffer.deallocate(capacity: count)
-
-        return dict
-    }
-    
-    public static func _forceBridgeFromObject(_ x: NSDictionary, result: inout Dictionary?) {
-        var dict = [Key: Value]()
-        var failedConversion = false
-        
-        if type(of: x) == NSDictionary.self || type(of: x) == NSMutableDictionary.self {
-            x.enumerateKeysAndObjects([]) { key, value, stop in
-                guard let key = key as? Key, let value = value as? Value else {
-                    failedConversion = true
-                    stop.pointee = true
-                    return
-                }
-                dict[key] = value
-            }
-        } else if type(of: x) == _NSCFDictionary.self {
-            let cf = x._cfObject
-            let cnt = CFDictionaryGetCount(cf)
-
-            let keys = UnsafeMutablePointer<UnsafeRawPointer?>.allocate(capacity: cnt)
-            let values = UnsafeMutablePointer<UnsafeRawPointer?>.allocate(capacity: cnt)
-            
-            CFDictionaryGetKeysAndValues(cf, keys, values)
-            
-            for idx in 0..<cnt {
-                let key = unsafeBitCast(keys.advanced(by: idx).pointee!, to: AnyObject.self)
-                let value = unsafeBitCast(values.advanced(by: idx).pointee!, to: AnyObject.self)
-                guard let k = key as? Key, let v = value as? Value else {
-                    failedConversion = true
-                    break
-                }
-                dict[k] = v
-            }
-            keys.deinitialize(count: cnt)
-            values.deinitialize(count: cnt)
-            keys.deallocate(capacity: cnt)
-            values.deallocate(capacity: cnt)
-        }
-        if !failedConversion {
-            result = dict
-        }
-    }
-    
-    public static func _conditionallyBridgeFromObject(_ x: NSDictionary, result: inout Dictionary?) -> Bool {
-        _forceBridgeFromObject(x, result: &result)
-        return true
-    }
-}
 
 open class NSDictionary : NSObject, NSCopying, NSMutableCopying, NSSecureCoding, NSCoding {
     private let _cfinfo = _CFInfo(typeID: CFDictionaryGetTypeID())
@@ -244,7 +173,8 @@ open class NSDictionary : NSObject, NSCopying, NSMutableCopying, NSSecureCoding,
         guard let otherDictionary = object as? NSDictionary else {
             return false
         }
-        return self.isEqual(to: otherDictionary.bridge())
+        
+        return self.isEqual(to: Dictionary._unconditionallyBridgeFromObjectiveC(otherDictionary))
     }
 
     open override var hash: Int {
@@ -540,11 +470,7 @@ open class NSDictionary : NSObject, NSCopying, NSMutableCopying, NSSecureCoding,
 
 extension NSDictionary : _CFBridgable, _SwiftBridgable {
     internal var _cfObject: CFDictionary { return unsafeBitCast(self, to: CFDictionary.self) }
-    internal var _swiftObject: Dictionary<NSObject, AnyObject> {
-        var dictionary: [NSObject: AnyObject]?
-        Dictionary._forceBridgeFromObject(self, result: &dictionary)
-        return dictionary!
-    }
+    internal var _swiftObject: Dictionary<NSObject, AnyObject> { return Dictionary._unconditionallyBridgeFromObjectiveC(self) }
 }
 
 extension NSMutableDictionary {
@@ -557,7 +483,7 @@ extension CFDictionary : _NSBridgable, _SwiftBridgable {
 }
 
 extension Dictionary : _NSBridgable, _CFBridgable {
-    internal var _nsObject: NSDictionary { return _bridgeToObject() }
+    internal var _nsObject: NSDictionary { return _bridgeToObjectiveC() }
     internal var _cfObject: CFDictionary { return _nsObject._cfObject }
 }
 
@@ -681,10 +607,3 @@ extension NSMutableDictionary {
 
 extension NSDictionary : ExpressibleByDictionaryLiteral { }
 
-extension Dictionary : Bridgeable {
-    public func bridge() -> NSDictionary { return _nsObject }
-}
-
-extension NSDictionary : Bridgeable {
-    public func bridge() -> [NSObject: AnyObject] { return _swiftObject }
-}

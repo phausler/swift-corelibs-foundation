@@ -45,7 +45,7 @@ open class NSLocale: NSObject, NSCopying, NSSecureCoding {
             guard let identifier = aDecoder.decodeObjectOfClass(NSString.self, forKey: "NS.identifier") else {
                 return nil
             }
-            self.init(localeIdentifier: identifier.bridge())
+            self.init(localeIdentifier: String._unconditionallyBridgeFromObjectiveC(identifier))
         } else {
             NSUnimplemented()
         }

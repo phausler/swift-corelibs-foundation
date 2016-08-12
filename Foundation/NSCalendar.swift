@@ -170,7 +170,7 @@ open class NSCalendar: NSObject, NSCopying, NSSecureCoding {
     
     open func encode(with aCoder: NSCoder) {
         if aCoder.allowsKeyedCoding {
-            aCoder.encode(self.calendarIdentifier.rawValue.bridge(), forKey: "NS.identifier")
+            aCoder.encode(self.calendarIdentifier.rawValue._bridgeToObjectiveC(), forKey: "NS.identifier")
             aCoder.encode(self.timeZone._nsObject, forKey: "NS.timezone")
             aCoder.encode(self.locale?._bridgeToObjectiveC(), forKey: "NS.locale")
             aCoder.encode(self.firstWeekday, forKey: "NS.firstwkdy")

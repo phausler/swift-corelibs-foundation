@@ -232,7 +232,7 @@ extension NSOrderedSet {
     
     /*@NSCopying*/ 
     public var reversedOrderedSet: NSOrderedSet { 
-        return NSOrderedSet(array: _orderedStorage.reversed().bridge().bridge())     
+        return NSOrderedSet(array: _orderedStorage.reversed())
     }
     
     // These two methods return a facade object for the receiving ordered set,

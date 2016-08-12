@@ -267,7 +267,7 @@ private struct JSONWriter {
     }
 
     func serializeString(_ str: NSString) throws {
-        let str = str.bridge()
+        let str = String._unconditionallyBridgeFromObjectiveC(str)
         
         writer("\"")
         for scalar in str.unicodeScalars {
@@ -317,7 +317,7 @@ private struct JSONWriter {
         }
         
         var first = true
-        for elem in array.bridge() {
+        for elem in array.allObjects {
             if first {
                 first = false
             } else if pretty {
@@ -343,7 +343,8 @@ private struct JSONWriter {
         }
         
         var first = true
-        for (key, value) in dict.bridge() {
+        
+        for (key, value) in Dictionary<NSObject, AnyObject>._unconditionallyBridgeFromObjectiveC(dict) {
             if first {
                 first = false
             } else if pretty {

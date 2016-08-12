@@ -741,8 +741,8 @@ open class FileManager: NSObject {
         if dest.hasPrefix("/") {
             return dest
         } else {
-            let temp = toPath.bridge().stringByDeletingLastPathComponent
-            return temp.bridge().stringByAppendingPathComponent(dest)
+            let temp = toPath._bridgeToObjectiveC().stringByDeletingLastPathComponent
+            return temp._bridgeToObjectiveC().stringByAppendingPathComponent(dest)
         }
     }
     

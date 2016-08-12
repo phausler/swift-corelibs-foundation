@@ -76,50 +76,6 @@ extension NSString {
     }
 }
 
-extension String : _ObjectTypeBridgeable {
-    public func _bridgeToObject() -> NSString {
-        return NSString(self)
-    }
-    
-    public static func _forceBridgeFromObject(_ x: NSString, result: inout String?) {
-        if type(of: x) == NSString.self || type(of: x) == NSMutableString.self {
-            result = x._storage
-        } else if type(of: x) == _NSCFString.self {
-            let cf = unsafeBitCast(x, to: CFString.self)
-            let str = CFStringGetCStringPtr(cf, CFStringEncoding(kCFStringEncodingUTF8))
-            if str != nil {
-                result = String(cString: str!)
-            } else {
-                let length = CFStringGetLength(cf)
-                let buffer = UnsafeMutablePointer<UniChar>.allocate(capacity: length)
-                CFStringGetCharacters(cf, CFRangeMake(0, length), buffer)
-                
-                let str = String._fromCodeUnitSequence(UTF16.self, input: UnsafeBufferPointer(start: buffer, count: length))
-                buffer.deinitialize(count: length)
-                buffer.deallocate(capacity: length)
-                result = str
-            }
-        } else if type(of: x) == _NSCFConstantString.self {
-            let conststr = unsafeBitCast(x, to: _NSCFConstantString.self)
-            let str = String._fromCodeUnitSequence(UTF8.self, input: UnsafeBufferPointer(start: conststr._ptr, count: Int(conststr._length)))
-            result = str
-        } else {
-            let len = x.length
-            var characters = [unichar](repeating: 0, count: len)
-            result = characters.withUnsafeMutableBufferPointer() { (buffer: inout UnsafeMutableBufferPointer<unichar>) -> String? in
-                x.getCharacters(buffer.baseAddress!, range: NSMakeRange(0, len))
-                return String._fromCodeUnitSequence(UTF16.self, input: buffer)
-            }
-        }
-    }
-    
-    public static func _conditionallyBridgeFromObject(_ x: NSString, result: inout String?) -> Bool {
-        self._forceBridgeFromObject(x, result: &result)
-        return result != nil
-    }
-}
-
-
 extension NSString {
     public struct CompareOptions : OptionSet {
         public let rawValue : UInt
@@ -1226,7 +1182,7 @@ extension NSString {
         }) else { return nil }
         
         var str: String?
-        if String._conditionallyBridgeFromObject(cf._nsObject, result: &str) {
+        if String._conditionallyBridgeFromObjectiveC(cf._nsObject, result: &str) {
             self.init(str!)
         } else {
             return nil
@@ -1239,7 +1195,7 @@ extension NSString {
             return nil
         }
         var str: String?
-        if String._conditionallyBridgeFromObject(cf._nsObject, result: &str) {
+        if String._conditionallyBridgeFromObjectiveC(cf._nsObject, result: &str) {
             self.init(str!)
         } else {
             return nil
@@ -1259,7 +1215,7 @@ extension NSString {
             return nil
         }
         var str: String?
-        if String._conditionallyBridgeFromObject(cf._nsObject, result: &str) {
+        if String._conditionallyBridgeFromObjectiveC(cf._nsObject, result: &str) {
             self.init(str!)
         } else {
             return nil
@@ -1276,7 +1232,7 @@ extension NSString {
                 ])
         }
         var str: String?
-        if String._conditionallyBridgeFromObject(cf._nsObject, result: &str) {
+        if String._conditionallyBridgeFromObjectiveC(cf._nsObject, result: &str) {
             self.init(str!)
         } else {
             throw NSError(domain: NSCocoaErrorDomain, code: NSCocoaError.FileReadInapplicableStringEncodingError.rawValue, userInfo: [
@@ -1326,7 +1282,7 @@ open class NSMutableString : NSString {
             return nil
         }
         
-        self.init(string: str.bridge())
+        self.init(string: String._unconditionallyBridgeFromObjectiveC(str))
     }
 
     public required convenience init(unicodeScalarLiteral value: StaticString) {
@@ -1439,11 +1395,7 @@ extension String {
 extension NSString : _CFBridgable, _SwiftBridgable {
     typealias SwiftType = String
     internal var _cfObject: CFString { return unsafeBitCast(self, to: CFString.self) }
-    internal var _swiftObject: String {
-        var str: String?
-        String._forceBridgeFromObject(self, result: &str)
-        return str!
-    }
+    internal var _swiftObject: String { return String._unconditionallyBridgeFromObjectiveC(self) }
 }
 
 extension NSMutableString {
@@ -1460,16 +1412,8 @@ extension CFString : _NSBridgable, _SwiftBridgable {
 extension String : _NSBridgable, _CFBridgable {
     typealias NSType = NSString
     typealias CFType = CFString
-    internal var _nsObject: NSType { return _bridgeToObject() }
+    internal var _nsObject: NSType { return _bridgeToObjectiveC() }
     internal var _cfObject: CFType { return _nsObject._cfObject }
-}
-
-extension String : Bridgeable {
-    public func bridge() -> NSString { return _nsObject }
-}
-
-extension NSString : Bridgeable {
-    public func bridge() -> String { return _swiftObject }
 }
 
 #if !(os(OSX) || os(iOS))

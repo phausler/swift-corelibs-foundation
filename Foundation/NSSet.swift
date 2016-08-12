@@ -10,66 +10,6 @@
 
 import CoreFoundation
 
-extension Set : _ObjectTypeBridgeable {
-    public func _bridgeToObject() -> NSSet {
-        let buffer = UnsafeMutablePointer<AnyObject?>.allocate(capacity: count)
-        
-        for (idx, obj) in enumerated() {
-            buffer.advanced(by: idx).initialize(to: _NSObjectRepresentableBridge(obj))
-        }
-        
-        let set = NSSet(objects: buffer, count: count)
-        
-        buffer.deinitialize(count: count)
-        buffer.deallocate(capacity: count)
-        
-        return set
-    }
-    
-    public static func _forceBridgeFromObject(_ x: NSSet, result: inout Set?) {
-        var set = Set<Element>()
-        var failedConversion = false
-        
-        if type(of: x) == NSSet.self || type(of: x) == NSMutableSet.self {
-            x.enumerateObjects([]) { obj, stop in
-                if let o = obj as? Element {
-                    set.insert(o)
-                } else {
-                    failedConversion = true
-                    stop.pointee = true
-                }
-            }
-        } else if type(of: x) == _NSCFSet.self {
-            let cf = x._cfObject
-            let cnt = CFSetGetCount(cf)
-            
-            let objs = UnsafeMutablePointer<UnsafeRawPointer?>.allocate(capacity: cnt)
-            
-            CFSetGetValues(cf, objs)
-            
-            for idx in 0..<cnt {
-                let obj = unsafeBitCast(objs.advanced(by: idx), to: AnyObject.self)
-                if let o = obj as? Element {
-                    set.insert(o)
-                } else {
-                    failedConversion = true
-                    break
-                }
-            }
-            objs.deinitialize(count: cnt)
-            objs.deallocate(capacity: cnt)
-        }
-        if !failedConversion {
-            result = set
-        }
-    }
-    
-    public static func _conditionallyBridgeFromObject(_ x: NSSet, result: inout Set?) -> Bool {
-        self._forceBridgeFromObject(x, result: &result)
-        return true
-    }
-}
-
 open class NSSet : NSObject, NSCopying, NSMutableCopying, NSSecureCoding, NSCoding {
     private let _cfinfo = _CFInfo(typeID: CFSetGetTypeID())
     internal var _storage: Set<NSObject>
@@ -193,7 +133,7 @@ open class NSSet : NSObject, NSCopying, NSMutableCopying, NSSecureCoding, NSCodi
             return false
         }
         let otherSet = otherObject as! NSSet
-        return self.isEqual(to: otherSet.bridge())
+        return self.isEqual(to: Set._unconditionallyBridgeFromObjectiveC(otherSet))
     }
 
     open override var hash: Int {
@@ -215,7 +155,7 @@ open class NSSet : NSObject, NSCopying, NSMutableCopying, NSSecureCoding, NSCodi
     }
 
     public convenience init(set: Set<NSObject>, copyItems flag: Bool) {
-        var array = set.bridge().allObjects
+        var array = set._bridgeToObjectiveC().allObjects
         if (flag) {
             array = array.map() { ($0 as! NSObject).copy() as! NSObject }
         }
@@ -327,11 +267,7 @@ extension NSSet {
 
 extension NSSet : _CFBridgable, _SwiftBridgable {
     internal var _cfObject: CFSet { return unsafeBitCast(self, to: CFSet.self) }
-    internal var _swiftObject: Set<NSObject> {
-        var set: Set<NSObject>?
-        Set._forceBridgeFromObject(self, result: &set)
-        return set!
-    }
+    internal var _swiftObject: Set<NSObject> { return Set._unconditionallyBridgeFromObjectiveC(self) }
 }
 
 extension CFSet : _NSBridgable, _SwiftBridgable {
@@ -340,7 +276,7 @@ extension CFSet : _NSBridgable, _SwiftBridgable {
 }
 
 extension Set : _NSBridgable, _CFBridgable {
-    internal var _nsObject: NSSet { return _bridgeToObject() }
+    internal var _nsObject: NSSet { return _bridgeToObjectiveC() }
     internal var _cfObject: CFSet { return _nsObject._cfObject }
 }
 
@@ -543,10 +479,3 @@ open class NSCountedSet : NSMutableSet {
     }
 }
 
-extension Set : Bridgeable {
-    public func bridge() -> NSSet { return _nsObject }
-}
-
-extension NSSet : Bridgeable {
-    public func bridge() -> Set<NSObject> { return _swiftObject }
-}

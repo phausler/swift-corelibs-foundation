@@ -227,7 +227,7 @@ open class NSURL: NSObject, NSSecureCoding, NSCopying {
                 return nil
             }
             
-            self.init(string: relative!.bridge(), relativeTo: base)
+            self.init(string: String._unconditionallyBridgeFromObjectiveC(relative!), relativeTo: base)
         } else {
             NSUnimplemented()
         }
@@ -236,7 +236,7 @@ open class NSURL: NSObject, NSSecureCoding, NSCopying {
     open func encode(with aCoder: NSCoder) {
 	if aCoder.allowsKeyedCoding {
             aCoder.encode(self.baseURL?._nsObject, forKey:"NS.base")
-            aCoder.encode(self.relativeString.bridge(), forKey:"NS.relative")
+            aCoder.encode(self.relativeString._bridgeToObjectiveC(), forKey:"NS.relative")
 	} else {
             NSUnimplemented()
         }
@@ -748,7 +748,7 @@ extension NSURL {
             absolutePath = selfPath
         } else {
             let workingDir = FileManager.default.currentDirectoryPath
-            absolutePath = workingDir.bridge().stringByAppendingPathComponent(selfPath)
+            absolutePath = workingDir._bridgeToObjectiveC().stringByAppendingPathComponent(selfPath)
         }
 
         
@@ -765,10 +765,10 @@ extension NSURL {
                 break
 
             case "..":
-                resolvedPath = resolvedPath.bridge().stringByDeletingLastPathComponent
+                resolvedPath = resolvedPath._bridgeToObjectiveC().stringByDeletingLastPathComponent
 
             default:
-                resolvedPath = resolvedPath.bridge().stringByAppendingPathComponent(component)
+                resolvedPath = resolvedPath._bridgeToObjectiveC().stringByAppendingPathComponent(component)
                 if let destination = FileManager.default._tryToResolveTrailingSymlinkInPath(resolvedPath) {
                     resolvedPath = destination
                 }
@@ -809,9 +809,9 @@ extension NSURL {
                 case ".":
                     break
                 case ".." where isAbsolutePath:
-                    result = result.bridge().stringByDeletingLastPathComponent
+                    result = result._bridgeToObjectiveC().stringByDeletingLastPathComponent
                 default:
-                    result = result.bridge().stringByAppendingPathComponent(component)
+                    result = result._bridgeToObjectiveC().stringByAppendingPathComponent(component)
             }
         }
 

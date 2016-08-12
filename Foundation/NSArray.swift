@@ -9,31 +9,6 @@
 
 import CoreFoundation
 
-extension Array : _ObjectTypeBridgeable {
-    public func _bridgeToObject() -> NSArray {
-        return NSArray(array: map {
-            return _NSObjectRepresentableBridge($0)
-        })
-    }
-    
-    public static func _forceBridgeFromObject(_ x: NSArray, result: inout Array?) {
-        var array = [Element]()
-        for value in x.allObjects {
-            if let v = value as? Element {
-                array.append(v)
-            } else {
-                return
-            }
-        }
-        result = array
-    }
-    
-    public static func _conditionallyBridgeFromObject(_ x: NSArray, result: inout Array?) -> Bool {
-        _forceBridgeFromObject(x, result: &result)
-        return true
-    }
-}
-
 open class NSArray : NSObject, NSCopying, NSMutableCopying, NSSecureCoding, NSCoding {
     private let _cfinfo = _CFInfo(typeID: CFArrayGetTypeID())
     internal var _storage = [AnyObject]()
@@ -170,7 +145,7 @@ open class NSArray : NSObject, NSCopying, NSMutableCopying, NSSecureCoding, NSCo
             return false
         }
         let otherArray = otherObject as! NSArray
-        return self.isEqual(to: otherArray.bridge())
+        return self.isEqual(to: otherArray.allObjects)
     }
 
     open override var hash: Int {
@@ -197,7 +172,7 @@ open class NSArray : NSObject, NSCopying, NSMutableCopying, NSSecureCoding, NSCo
     
     open func componentsJoined(by separator: String) -> String {
         // make certain to call NSObject's description rather than asking the string interpolator for the swift description
-        return bridge().map() { ($0 as! NSObject).description }.joined(separator: separator)
+        return allObjects.map { ($0 as! NSObject).description }.joined(separator: separator)
     }
 
     open func contains(_ anObject: AnyObject) -> Bool {
@@ -597,11 +572,7 @@ open class NSArray : NSObject, NSCopying, NSMutableCopying, NSSecureCoding, NSCo
 
 extension NSArray : _CFBridgable, _SwiftBridgable {
     internal var _cfObject: CFArray { return unsafeBitCast(self, to: CFArray.self) }
-    internal var _swiftObject: [AnyObject] {
-        var array: [AnyObject]?
-        Array._forceBridgeFromObject(self, result: &array)
-        return array!
-    }
+    internal var _swiftObject: [AnyObject] { return Array._unconditionallyBridgeFromObjectiveC(self) }
 }
 
 extension NSMutableArray {
@@ -628,7 +599,7 @@ extension CFArray {
 }
 
 extension Array : _NSBridgable, _CFBridgable {
-    internal var _nsObject: NSArray { return _bridgeToObject() }
+    internal var _nsObject: NSArray { return _bridgeToObjectiveC() }
     internal var _cfObject: CFArray { return _nsObject._cfObject }
 }
 
@@ -780,7 +751,7 @@ open class NSMutableArray : NSArray {
     }
     open func replaceObjects(in range: NSRange, withObjectsFrom otherArray: [AnyObject], range otherRange: NSRange) {
         var list = [AnyObject]()
-        otherArray.bridge().getObjects(&list, range:otherRange)
+        otherArray._bridgeToObjectiveC().getObjects(&list, range:otherRange)
         replaceObjectsInRange(range, withObjectsFromArray:list)
     }
     
@@ -858,10 +829,3 @@ extension NSArray : Sequence {
     }
 }
 
-extension Array : Bridgeable {
-    public func bridge() -> NSArray { return _nsObject }
-}
-
-extension NSArray : Bridgeable {
-    public func bridge() -> Array<AnyObject> { return _swiftObject }
-}
