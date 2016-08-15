@@ -31,7 +31,7 @@ public func <(lhs: NSNotification.Name, rhs: NSNotification.Name) -> Bool {
 open class NSNotification: NSObject, NSCopying, NSCoding {
     private(set) open var name: Name
     
-    private(set) open var object: AnyObject?
+    private(set) open var object: Any?
     
     private(set) open var userInfo: [String : Any]?
     
@@ -40,7 +40,7 @@ open class NSNotification: NSObject, NSCopying, NSCoding {
         fatalError()
     }
     
-    public init(name: Name, object: AnyObject?, userInfo: [String : Any]?) {
+    public init(name: Name, object: Any?, userInfo: [String : Any]?) {
         self.name = name
         self.object = object
         self.userInfo = userInfo
@@ -101,7 +101,7 @@ open class NSNotification: NSObject, NSCopying, NSCoding {
 }
 
 extension NSNotification {
-    public convenience init(name aName: Name, object anObject: AnyObject?) {
+    public convenience init(name aName: Name, object anObject: Any?) {
         self.init(name: aName, object: anObject, userInfo: nil)
     }
 }

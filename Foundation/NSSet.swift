@@ -63,7 +63,7 @@ open class NSSet : NSObject, NSCopying, NSMutableCopying, NSSecureCoding, NSCodi
             }
             let objects = UnsafeMutablePointer<AnyObject>.allocate(capacity: Int(cnt))
             for idx in 0..<cnt {
-                objects.advanced(by: Int(idx)).initialize(to: aDecoder.decodeObject()!)
+                objects.advanced(by: Int(idx)).initialize(to: aDecoder.decodeObject()! as AnyObject)
             }
             self.init(objects: objects, count: Int(cnt))
             objects.deinitialize(count: Int(cnt))

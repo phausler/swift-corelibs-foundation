@@ -44,6 +44,7 @@ open class NSDictionary : NSObject, NSCopying, NSMutableCopying, NSSecureCoding,
     }
     
     public required init(objects: UnsafePointer<AnyObject>!, forKeys keys: UnsafePointer<NSObject>!, count cnt: Int) {
+        _storage = [NSObject : AnyObject](minimumCapacity: cnt)
         for idx in 0..<cnt {
             let key = keys[idx].copy()
             let value = objects[idx]
