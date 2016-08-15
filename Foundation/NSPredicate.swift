@@ -80,16 +80,19 @@ open class Predicate : NSObject, NSSecureCoding, NSCopying {
     open func allowEvaluation() { NSUnimplemented() } // Force a predicate which was securely decoded to allow evaluation
 }
 
+
 extension NSArray {
-    public func filteredArrayUsingPredicate(_ predicate: Predicate) -> [Any] {
+     // evaluate a predicate against an array of objects and return a filtered array
+    open func filtered(using predicate: Predicate) -> [Any] {
         return allObjects.filter({ object in
             return predicate.evaluate(with: object)
         })
-    } // evaluate a predicate against an array of objects and return a filtered array
+    }
 }
 
 extension NSMutableArray {
-    public func filterUsingPredicate(_ predicate: Predicate) {
+    // evaluate a predicate against an array of objects and filter the mutable array directly
+    open func filter(using predicate: Predicate) {
         var indexesToRemove = IndexSet()
         for (index, object) in self.enumerated() {
             if !predicate.evaluate(with: object) {
@@ -97,44 +100,48 @@ extension NSMutableArray {
             }
         }
         self.removeObjectsAtIndexes(indexesToRemove)
-    } // evaluate a predicate against an array of objects and filter the mutable array directly
+    }
 }
 
 extension NSSet {
-    public func filteredSetUsingPredicate(_ predicate: Predicate) -> Set<NSObject> {
+    // evaluate a predicate against a set of objects and return a filtered set
+    open func filtered(using predicate: Predicate) -> Set<AnyHashable> {
         let objs = allObjects.filter { (object) -> Bool in
             return predicate.evaluate(with: object)
         }
-        return Set(objs.map { $0 as! NSObject })
-    } // evaluate a predicate against a set of objects and return a filtered set
+        return Set(objs.map { $0 as! AnyHashable })
+    }
 }
 
 extension NSMutableSet {
-    public func filterUsingPredicate(_ predicate: Predicate) {
+    // evaluate a predicate against a set of objects and filter the mutable set directly
+    open func filter(using predicate: Predicate) {
         for object in self {
             if !predicate.evaluate(with: object) {
                 self.remove(object)
             }
         }
-    } // evaluate a predicate against a set of objects and filter the mutable set directly
+    }
 }
 
 extension NSOrderedSet {
-    public func filteredOrderedSetUsingPredicate(_ predicate: Predicate) -> NSOrderedSet {
+    // evaluate a predicate against an ordered set of objects and return a filtered ordered set
+    open func filtered(using p: Predicate) -> NSOrderedSet {
         return NSOrderedSet(array: self._orderedStorage.filter({ object in
-            return predicate.evaluate(with: object)
+            return p.evaluate(with: object)
         }))
-    } // evaluate a predicate against an ordered set of objects and return a filtered ordered set
+    }
 }
 
 extension NSMutableOrderedSet {
-    public func filterUsingPredicate(_ predicate: Predicate) {
+    // evaluate a predicate against an ordered set of objects and filter the mutable ordered set directly
+    open func filter(using p: Predicate) {
         var indexesToRemove = IndexSet()
         for (index, object) in self.enumerated() {
-            if !predicate.evaluate(with: object) {
+            if !p.evaluate(with: object) {
                 indexesToRemove.insert(index)
             }
         }
         self.removeObjects(at: indexesToRemove)
-    } // evaluate a predicate against an ordered set of objects and filter the mutable ordered set directly
+    }
 }
