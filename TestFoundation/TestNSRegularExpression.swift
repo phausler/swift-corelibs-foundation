@@ -31,7 +31,7 @@ class TestNSRegularExpression : XCTestCase {
     
     func simpleRegularExpressionTestWithPattern(_ patternString: String, target searchString: String, looking: Bool, match: Bool, file: StaticString = #file, line: UInt = #line) {
         do {
-            let str = searchString.bridge()
+            let str = NSString(string: searchString)
             var range = NSMakeRange(0, str.length)
             let regex = try RegularExpression(pattern: patternString, options: [])
             do {
@@ -54,7 +54,7 @@ class TestNSRegularExpression : XCTestCase {
             do {
                 let prefixString = "when in the course of human events "
                 let suffixString = " becomes necessary"
-                let searchString2 = "\(prefixString)\(searchString)\(suffixString)".bridge()
+                let searchString2 = NSString(string: "\(prefixString)\(searchString)\(suffixString)")
                 range.location = prefixString.utf16.count
                 let lookingRange = searchString2.range(of: patternString, options: [.regularExpression, .anchored], range: range, locale: nil)
                 let matchRange = searchString2.range(of: patternString, options: [.regularExpression], range: range, locale: nil)
@@ -68,7 +68,7 @@ class TestNSRegularExpression : XCTestCase {
             if !patternString.hasPrefix(".") {
                 let prefixString = "when in the course of human events "
                 let suffixString = " becomes necessary becomes necessary becomes necessary becomes necessary becomes necessary becomes necessary becomes necessary becomes necessary becomes necessary becomes necessary becomes necessary becomes necessary becomes necessary becomes necessary becomes necessary"
-                let searchString2 = "\(prefixString)\(searchString)\(suffixString)".bridge()
+                let searchString2 = NSString(string: "\(prefixString)\(searchString)\(suffixString)")
                 range.location = prefixString.utf16.count
                 let lookingRange = searchString2.range(of: patternString, options:  [.regularExpression, .anchored], range: NSMakeRange(range.location, range.length + suffixString.utf16.count), locale: nil)
                 let matchRange = searchString2.range(of: patternString, options: .regularExpression, range: NSMakeRange(range.location, range.length + suffixString.utf16.count), locale: nil)
@@ -82,7 +82,7 @@ class TestNSRegularExpression : XCTestCase {
             do {
                 let prefixString = "when in the course of human events "
                 let suffixString = " becomes necessary’"
-                let searchString2 = "\(prefixString)\(searchString)\(suffixString)".bridge()
+                let searchString2 = NSString(string: "\(prefixString)\(searchString)\(suffixString)")
                 range.location = prefixString.utf16.count
                 let lookingRange = searchString2.range(of: patternString, options: [.regularExpression, .anchored], range: range, locale: nil)
                 let matchRange = searchString2.range(of: patternString, options: [.regularExpression], range: range, locale: nil)
@@ -165,7 +165,7 @@ class TestNSRegularExpression : XCTestCase {
     func replaceRegularExpressionTest(_ patternString: String, _ patternOptions: RegularExpression.Options, _ searchString: String, _ searchOptions: NSMatchingOptions, _ searchRange: NSRange, _ templ: String, _ numberOfMatches: Int, _ result: String, file: StaticString = #file, line: UInt = #line) {
         do {
             let regex = try RegularExpression(pattern: patternString, options: patternOptions)
-            let mutableString = searchString.bridge().mutableCopy() as! NSMutableString
+            let mutableString = NSMutableString(string: searchString)
             let matchCount = regex.replaceMatches(in: mutableString, options: searchOptions, range: searchRange, withTemplate: templ)
             let replacedString = regex.stringByReplacingMatches(in: searchString, options: searchOptions, range: searchRange, withTemplate: templ)
             XCTAssertEqual(numberOfMatches, matchCount, "Regex replace \(patternString) in \(searchString) with \(templ) number \(matchCount) should be \(numberOfMatches)", file: file, line: line)
