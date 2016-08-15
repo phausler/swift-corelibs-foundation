@@ -52,26 +52,27 @@ class TestNSPredicate: XCTestCase {
         return (obj as? NSString).map({ $0.length < 3 }) == true
     }
 
-    let startArray = ["1".bridge(), "12".bridge(), "123".bridge(), "1234".bridge()]
-    let expectedArray = ["1".bridge(), "12".bridge()]
+    let startArray = ["1", "12", "123", "1234"]
+    let expectedArray = ["1", "12"]
 
     func test_filterNSArray() {
-        let filteredArray = startArray.bridge().filteredArrayUsingPredicate(lengthLessThanThreePredicate).bridge()
+        
+        let filteredArray = NSArray(array: startArray).filteredArrayUsingPredicate(lengthLessThanThreePredicate).map { $0 as! String }
 
-        XCTAssertEqual(expectedArray.bridge(), filteredArray)
+        XCTAssertEqual(expectedArray, filteredArray)
     }
 
     func test_filterNSMutableArray() {
-        let array = startArray.bridge().mutableCopy() as! NSMutableArray
-
+        let array = NSMutableArray(array: startArray)
+        
         array.filterUsingPredicate(lengthLessThanThreePredicate)
 
-        XCTAssertEqual(expectedArray.bridge(), array)
+        XCTAssertEqual(NSArray(array: expectedArray), array)
     }
 
     func test_filterNSSet() {
-        let set = Set(startArray).bridge()
-        let filteredSet = set.filteredSetUsingPredicate(lengthLessThanThreePredicate).bridge()
+        let set = NSSet(array: startArray)
+        let filteredSet = set.filteredSetUsingPredicate(lengthLessThanThreePredicate)
 
         XCTAssertEqual(Set(expectedArray).bridge(), filteredSet)
     }
