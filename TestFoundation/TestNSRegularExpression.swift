@@ -170,7 +170,7 @@ class TestNSRegularExpression : XCTestCase {
             let replacedString = regex.stringByReplacingMatches(in: searchString, options: searchOptions, range: searchRange, withTemplate: templ)
             XCTAssertEqual(numberOfMatches, matchCount, "Regex replace \(patternString) in \(searchString) with \(templ) number \(matchCount) should be \(numberOfMatches)", file: file, line: line)
             XCTAssertEqual(result, replacedString, "Regex replace \(patternString) in \(searchString) with \(templ) replaced \(replacedString) should be \(result)", file: file, line: line)
-            XCTAssertEqual(result, mutableString.bridge(), "Regex replace \(patternString) in \(searchString) with \(templ) mutated \(mutableString) should be \(result)", file: file, line: line)
+            XCTAssertEqual(NSString(string: result), mutableString, "Regex replace \(patternString) in \(searchString) with \(templ) mutated \(mutableString) should be \(result)", file: file, line: line)
         } catch {
             XCTFail("Unable to construct regular expression from \(patternString) options \(patternOptions)", file: file, line: line)
         }

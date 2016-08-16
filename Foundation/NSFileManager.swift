@@ -207,7 +207,7 @@ open class FileManager: NSObject {
         if createIntermediates {
             var isDir: ObjCBool = false
             if !fileExists(atPath: path, isDirectory: &isDir) {
-                let parent = path._nsObject.stringByDeletingLastPathComponent
+                let parent = path._nsObject.deletingLastPathComponent
                 if !fileExists(atPath: parent, isDirectory: &isDir) {
                     try createDirectory(atPath: parent, withIntermediateDirectories: true, attributes: attributes)
                 }
@@ -749,8 +749,8 @@ open class FileManager: NSObject {
         if dest.hasPrefix("/") {
             return dest
         } else {
-            let temp = toPath._bridgeToObjectiveC().stringByDeletingLastPathComponent
-            return temp._bridgeToObjectiveC().stringByAppendingPathComponent(dest)
+            let temp = toPath._bridgeToObjectiveC().deletingLastPathComponent
+            return temp._bridgeToObjectiveC().appendingPathComponent(dest)
         }
     }
     

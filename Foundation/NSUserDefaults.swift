@@ -191,7 +191,7 @@ open class UserDefaults: NSObject {
         }
         
         if let bVal = aVal as? NSString {
-            let cVal = bVal.stringByExpandingTildeInPath
+            let cVal = bVal.expandingTildeInPath
             
             return URL(fileURLWithPath: cVal)
         } else if let bVal = aVal as? Data {

@@ -270,6 +270,10 @@ open class NSString : NSObject, NSCopying, NSMutableCopying, NSSecureCoding, NSC
         _storage = String(describing: value)
     }
     
+    public convenience init?(cString nullTerminatedCString: UnsafePointer<Int8>, encoding: UInt) {
+        self.init(string: CFStringCreateWithCString(kCFAllocatorSystemDefault, nullTerminatedCString, CFStringEncoding(encoding))._swiftObject)
+    }
+    
     internal var _fastCStringContents: UnsafePointer<Int8>? {
         if type(of: self) == NSString.self || type(of: self) == NSMutableString.self {
             if _storage._core.isASCII {
@@ -887,7 +891,7 @@ extension NSString {
         return convertedLen != len ? 0 : numBytes
     }
     
-    open class func availableStringEncodings() -> UnsafePointer<UInt> {
+    open class var availableStringEncodings: UnsafePointer<UInt> {
         struct once {
             static let encodings: UnsafePointer<UInt> = {
                 let cfEncodings = CFStringGetListOfAvailableEncodings()!
@@ -923,7 +927,7 @@ extension NSString {
         return ""
     }
     
-    open class func defaultCStringEncoding() -> UInt {
+    open class var defaultCStringEncoding: UInt {
         return CFStringConvertEncodingToNSStringEncoding(CFStringGetSystemEncoding())
     }
     
@@ -1042,7 +1046,7 @@ extension NSString {
         return mStr._swiftObject
     }
     
-    open func folding(_ options: CompareOptions = [], locale: Locale?) -> String {
+    open func folding(options options: CompareOptions = [], locale: Locale?) -> String {
         let string = CFStringCreateMutable(kCFAllocatorSystemDefault, 0)!
         CFStringReplaceAll(string, self._cfObject)
         CFStringFold(string, options._cfValue(), locale?._cfObject)
@@ -1135,7 +1139,7 @@ extension NSString {
         }
     }
     
-    public convenience init?(UTF8String nullTerminatedCString: UnsafePointer<Int8>) {
+    public convenience init?(utf8String nullTerminatedCString: UnsafePointer<Int8>) {
         let count = Int(strlen(nullTerminatedCString))
         if let str = nullTerminatedCString.withMemoryRebound(to: UInt8.self, capacity: count, {
             let buffer = UnsafeBufferPointer<UInt8>(start: $0, count: count)

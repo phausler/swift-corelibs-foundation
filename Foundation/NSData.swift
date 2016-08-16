@@ -400,7 +400,7 @@ extension NSData {
     }
 
     internal func makeTemporaryFileInDirectory(_ dirPath: String) throws -> (Int32, String) {
-        let template = dirPath._nsObject.stringByAppendingPathComponent("tmp.XXXXXX")
+        let template = dirPath._nsObject.appendingPathComponent("tmp.XXXXXX")
         let maxLength = Int(PATH_MAX) + 1
         var buf = [Int8](repeating: 0, count: maxLength)
         let _ = template._nsObject.getFileSystemRepresentation(&buf, maxLength: maxLength)
@@ -444,7 +444,7 @@ extension NSData {
             } else if errno != ENOENT && errno != ENAMETOOLONG {
                 throw _NSErrorWithErrno(errno, reading: false, path: path)
             }
-            let (newFD, path) = try self.makeTemporaryFileInDirectory(path._nsObject.stringByDeletingLastPathComponent)
+            let (newFD, path) = try self.makeTemporaryFileInDirectory(path._nsObject.deletingLastPathComponent)
             fd = newFD
             auxFilePath = path
             fchmod(fd, 0o666)

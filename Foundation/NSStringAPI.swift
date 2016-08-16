@@ -34,32 +34,28 @@ func _toNSRange(_ r: Range<String.Index>) -> NSRange {
     length: r.upperBound._utf16Index - r.lowerBound._utf16Index)
 }
 
-func _countFormatSpecifiers(_ a: String) -> Int {
-  // The implementation takes advantage of the fact that internal
-  // representation of String is UTF-16.  Because we only care about the ASCII
-  // percent character, we don't need to decode UTF-16.
-
-  let percentUTF16  = UTF16.CodeUnit(("%" as UnicodeScalar).value)
-  let notPercentUTF16: UTF16.CodeUnit = 0
-  var lastChar = notPercentUTF16 // anything other than % would work here
-  var count = 0
-
-  for c in a.utf16 {
-    if lastChar == percentUTF16 {
-      if c == percentUTF16 {
-        // a "%" following this one should not be taken as literal
-        lastChar = notPercentUTF16
-      }
-      else {
-        count += 1
-        lastChar = c
-      }
-    } else {
-      lastChar = c
-    }
+// We only need this for UnsafeMutablePointer, but there's not currently a way
+// to write that constraint.
+extension Optional {
+  /// Invokes `body` with `nil` if `self` is `nil`; otherwise, passes the
+  /// address of `object` to `body`.
+  ///
+  /// This is intended for use with Foundation APIs that return an Objective-C
+  /// type via out-parameter where it is important to be able to *ignore* that
+  /// parameter by passing `nil`. (For some APIs, this may allow the
+  /// implementation to avoid some work.)
+  ///
+  /// In most cases it would be simpler to just write this code inline, but if
+  /// `body` is complicated than that results in unnecessarily repeated code.
+  internal func _withNilOrAddress<NSType : AnyObject, ResultType>(
+    of object: inout NSType?,
+    _ body:
+      (AutoreleasingUnsafeMutablePointer<NSType?>?) -> ResultType
+  ) -> ResultType {
+    return self == nil ? body(nil) : body(&object)
   }
-  return count
 }
+
 
 extension String {
 
@@ -68,16 +64,16 @@ extension String {
 
   /// The corresponding `NSString` - a convenience for bridging code.
   var _ns: NSString {
-    return self._nsObject
+    return self._bridgeToObjectiveC()
   }
 
   /// Return an `Index` corresponding to the given offset in our UTF-16
   /// representation.
   func _index(_ utf16Index: Int) -> Index {
     return Index(
-      String.UTF16View.Index(utf16Index),
-      within: self
-    )!
+      _base: String.UnicodeScalarView.Index(_position: utf16Index),
+      in: characters
+    )
   }
 
   /// Return a `Range<Index>` corresponding to the given `NSRange` of
@@ -124,13 +120,13 @@ extension String {
   //===--- Class Methods --------------------------------------------------===//
   //===--------------------------------------------------------------------===//
 
-  // + (const NSStringEncoding *)availableStringEncodings
+  // @property (class) const NSStringEncoding *availableStringEncodings;
 
   /// Returns an Array of the encodings string objects support
   /// in the application's environment.
-  public static func availableStringEncodings() -> [Encoding] {
+  public static var availableStringEncodings: [Encoding] {
     var result = [Encoding]()
-    var p = NSString.availableStringEncodings()
+    var p = NSString.availableStringEncodings
     while p.pointee != 0 {
       result.append(Encoding(rawValue: p.pointee))
       p += 1
@@ -138,12 +134,12 @@ extension String {
     return result
   }
 
-  // + (NSStringEncoding)defaultCStringEncoding
+  // @property (class) NSStringEncoding defaultCStringEncoding;
 
   /// Returns the C-string encoding assumed for any method accepting
   /// a C string as an argument.
-  public static func defaultCStringEncoding() -> Encoding {
-    return Encoding(rawValue: NSString.defaultCStringEncoding())
+  public static var defaultCStringEncoding: Encoding {
+    return Encoding(rawValue: NSString.defaultCStringEncoding)
   }
 
   // + (NSString *)localizedNameOfStringEncoding:(NSStringEncoding)encoding
@@ -165,6 +161,15 @@ extension String {
   ) -> String {
     return String(format: format, locale: Locale.current,
       arguments: arguments)
+  }
+
+  // + (NSString *)pathWithComponents:(NSArray *)components
+
+  /// Returns a string built from the strings in a given array
+  /// by concatenating them with a path separator between each pair.
+  @available(*, unavailable, message: "Use fileURL(withPathComponents:) on URL instead.")
+  public static func path(withComponents components: [String]) -> String {
+    return (NSURL.fileURLWithPathComponents(components)?.path)!
   }
 
   //===--------------------------------------------------------------------===//
@@ -212,7 +217,7 @@ extension String {
   /// Produces a string created by copying the data from a given
   /// C array of UTF8-encoded bytes.
   public init?(utf8String bytes: UnsafePointer<CChar>) {
-    if let ns = NSString(UTF8String: bytes) {
+    if let ns = NSString(utf8String: bytes) {
       self = ns._swiftObject
     } else {
       return nil
@@ -246,6 +251,7 @@ extension String {
 
   /// A capitalized representation of the `String` that is produced
   /// using the current locale.
+  @available(OSX 10.11, iOS 9.0, *)
   public var localizedCapitalized: String {
     return _ns.localizedCapitalized
   }
@@ -329,6 +335,41 @@ extension String {
     : _ns.compare(aString)
   }
 
+  // - (NSUInteger)
+  //     completePathIntoString:(NSString **)outputName
+  //     caseSensitive:(BOOL)flag
+  //     matchesIntoArray:(NSArray **)outputArray
+  //     filterTypes:(NSArray *)filterTypes
+
+  /// Interprets the `String` as a path in the file system and
+  /// attempts to perform filename completion, returning a numeric
+  /// value that indicates whether a match was possible, and by
+  /// reference the longest path that matches the `String`.
+  /// Returns the actual number of matching paths.
+  public func completePath(
+    into outputName: UnsafeMutablePointer<String>? = nil,
+    caseSensitive: Bool,
+    matchesInto outputArray: UnsafeMutablePointer<[String]>? = nil,
+    filterTypes: [String]? = nil
+  ) -> Int {
+
+    var outputNamePlaceholder: String?
+    var outputArrayPlaceholder = [String]()
+    let res = self._ns.completePath(
+        into: &outputNamePlaceholder,
+        caseSensitive: caseSensitive,
+        matchesInto: &outputArrayPlaceholder,
+        filterTypes: filterTypes
+    )
+    if let n = outputNamePlaceholder {
+        outputName?.pointee = n
+    } else {
+        outputName?.pointee = ""
+    }
+    outputArray?.pointee = outputArrayPlaceholder
+    return res
+  }
+
   // - (NSArray *)
   //     componentsSeparatedByCharactersInSet:(NSCharacterSet *)separator
 
@@ -404,14 +445,16 @@ extension String {
   //     enumerateLinesUsing:(void (^)(NSString *line, BOOL *stop))block
 
   /// Enumerates all the lines in a string.
-  public func enumerateLines(_ body: (_ line: String, _ stop: inout Bool) -> ()) {
+  public func enumerateLines(
+    invoking body: @escaping (_ line: String, _ stop: inout Bool) -> ()
+  ) {
     _ns.enumerateLines {
       (line: String, stop: UnsafeMutablePointer<ObjCBool>)
     in
       var stop_ = false
       body(line, &stop_)
       if stop_ {
-        UnsafeMutablePointer<ObjCBool>(stop).pointee = true
+        stop.pointee = true
       }
     }
   }
@@ -433,7 +476,7 @@ extension String {
   public func enumerateSubstrings(
     in range: Range<Index>,
     options opts: EnumerationOptions = [],
-    _ body: (
+    _ body: @escaping (
       _ substring: String?, _ substringRange: Range<Index>,
       _ enclosingRange: Range<Index>, inout Bool
     ) -> ()
@@ -635,8 +678,7 @@ extension String {
     let byteArray = Array(bytes)
     if let ns = NSString(
       bytes: byteArray, length: byteArray.count, encoding: encoding.rawValue) {
-
-      self = ns._swiftObject
+      self = String._unconditionallyBridgeFromObjectiveC(ns)
     } else {
       return nil
     }
@@ -659,8 +701,7 @@ extension String {
     if let ns = NSString(
       bytesNoCopy: bytes, length: length, encoding: encoding.rawValue,
       freeWhenDone: flag) {
-
-      self = ns._swiftObject
+      self = String._unconditionallyBridgeFromObjectiveC(ns)
     } else {
       return nil
     }
@@ -678,7 +719,7 @@ extension String {
     utf16CodeUnits: UnsafePointer<unichar>,
     count: Int
   ) {
-    self = NSString(characters: utf16CodeUnits, length: count)._swiftObject
+    self = String._unconditionallyBridgeFromObjectiveC(NSString(characters: utf16CodeUnits, length: count))
   }
 
   // - (instancetype)
@@ -693,10 +734,10 @@ extension String {
     count: Int,
     freeWhenDone flag: Bool
   ) {
-    self = NSString(
+    self = String._unconditionallyBridgeFromObjectiveC(NSString(
       charactersNoCopy: UnsafeMutablePointer(mutating: utf16CodeUnitsNoCopy),
       length: count,
-      freeWhenDone: flag)._swiftObject
+      freeWhenDone: flag))
   }
 
   //===--- Initializers that can fail -------------------------------------===//
@@ -714,7 +755,7 @@ extension String {
     encoding enc: Encoding
   ) throws {
     let ns = try NSString(contentsOfFile: path, encoding: enc.rawValue)
-    self = ns._swiftObject
+    self = String._unconditionallyBridgeFromObjectiveC(ns)
   }
 
   // - (instancetype)
@@ -732,14 +773,14 @@ extension String {
     var enc: UInt = 0
     let ns = try NSString(contentsOfFile: path, usedEncoding: &enc)
     usedEncoding = Encoding(rawValue: enc)
-    self = ns._swiftObject
+    self = String._unconditionallyBridgeFromObjectiveC(ns)
   }
 
   public init(
     contentsOfFile path: String
   ) throws {
     let ns = try NSString(contentsOfFile: path, usedEncoding: nil)
-    self = ns._swiftObject
+    self = String._unconditionallyBridgeFromObjectiveC(ns)
   }
 
   // - (instancetype)
@@ -755,7 +796,7 @@ extension String {
     encoding enc: Encoding
   ) throws {
     let ns = try NSString(contentsOf: url, encoding: enc.rawValue)
-    self = ns._swiftObject
+    self = String._unconditionallyBridgeFromObjectiveC(ns)
   }
 
   // - (instancetype)
@@ -773,14 +814,14 @@ extension String {
     var enc: UInt = 0
     let ns = try NSString(contentsOf: url as URL, usedEncoding: &enc)
     usedEncoding = Encoding(rawValue: enc)
-    self = ns._swiftObject
+    self = String._unconditionallyBridgeFromObjectiveC(ns)
   }
 
   public init(
     contentsOf url: URL
   ) throws {
     let ns = try NSString(contentsOf: url, usedEncoding: nil)
-    self = ns._swiftObject
+    self = String._unconditionallyBridgeFromObjectiveC(ns)
   }
 
   // - (instancetype)
@@ -793,8 +834,8 @@ extension String {
     cString: UnsafePointer<CChar>,
     encoding enc: Encoding
   ) {
-    if let ns = NSString(CString: cString, encoding: enc.rawValue) {
-      self = ns._swiftObject
+    if let ns = NSString(cString: cString, encoding: enc.rawValue) {
+      self = String._unconditionallyBridgeFromObjectiveC(ns)
     } else {
       return nil
     }
@@ -810,7 +851,7 @@ extension String {
   /// Unicode characters using a given `encoding`.
   public init?(data: Data, encoding: Encoding) {
     guard let s = NSString(data: data, encoding: encoding.rawValue) else { return nil }
-    self = s._swiftObject
+    self = String._unconditionallyBridgeFromObjectiveC(s)
   }
   
   // - (instancetype)initWithFormat:(NSString *)format, ...
@@ -851,12 +892,10 @@ extension String {
   /// format string as a template into which the remaining argument
   /// values are substituted according to given locale information.
   public init(format: String, locale: Locale?, arguments: [CVarArg]) {
-    _precondition(
-      _countFormatSpecifiers(format) <= arguments.count,
-      "Too many format specifiers (%<letter>) provided for the argument list"
-    )
     self = withVaList(arguments) {
-      NSString(format: format, locale: locale?._bridgeToObjectiveC(), arguments: $0)._swiftObject
+      String._unconditionallyBridgeFromObjectiveC(
+        NSString(format: format, locale: locale?._bridgeToObjectiveC(), arguments: $0)
+      )
     }
   }
 
@@ -939,6 +978,7 @@ extension String {
 
   /// A lowercase version of the string that is produced using the current
   /// locale.
+  @available(OSX 10.11, iOS 9.0, *)
   public var localizedLowercase: String {
     return _ns.localizedLowercase
   }
@@ -1003,26 +1043,27 @@ extension String {
     return _ns.precomposedStringWithCompatibilityMapping
   }
 
+#if false
   // - (id)propertyList
 
   /// Parses the `String` as a text representation of a
   /// property list, returning an NSString, NSData, NSArray, or
   /// NSDictionary object, according to the topmost element.
-#if false
-  public func propertyList() -> AnyObject {
+  public func propertyList() -> Any {
     return _ns.propertyList()
   }
-#endif
+
   // - (NSDictionary *)propertyListFromStringsFileFormat
 
   /// Returns a dictionary object initialized with the keys and
   /// values found in the `String`.
-#if false
   public
   func propertyListFromStringsFileFormat() -> [String : String] {
-    return _ns.propertyListFromStringsFileFormat() as! [String : String]
+    return _ns.propertyListFromStringsFileFormat()! as [NSObject : AnyObject]
+      as! [String : String]
   }
 #endif
+    
   // - (NSRange)rangeOfCharacterFromSet:(NSCharacterSet *)aSet
   //
   // - (NSRange)
@@ -1128,6 +1169,7 @@ extension String {
   /// similar to how searches are done generally in the system.  The search is
   /// locale-aware, case and diacritic insensitive.  The exact list of search
   /// options applied may change over time.
+  @available(OSX 10.11, iOS 9.0, *)
   public func localizedStandardContains(_ string: String) -> Bool {
     return _ns.localizedStandardContains(string)
   }
@@ -1142,6 +1184,7 @@ extension String {
   /// similar to how searches are done generally in the system.  The search is
   /// locale-aware, case and diacritic insensitive.  The exact list of search
   /// options applied may change over time.
+  @available(OSX 10.11, iOS 9.0, *)
   public func localizedStandardRange(of string: String) -> Range<Index>? {
     return _optionalRange(_ns.localizedStandardRange(of: string))
   }
@@ -1154,18 +1197,6 @@ extension String {
     return Encoding(rawValue: _ns.smallestEncoding)
   }
 
-  // @property NSString *stringByAbbreviatingWithTildeInPath;
-
-  /// Returns a new string that replaces the current home
-  /// directory portion of the current path with a tilde (`~`)
-  /// character.
-#if false
-  @available(*, unavailable, message: "Use abbreviatingWithTildeInPath on NSString instead.")
-  public var abbreviatingWithTildeInPath: String {
-    return _ns.abbreviatingWithTildeInPath
-  }
-#endif
-
   // - (NSString *)
   //     stringByAddingPercentEncodingWithAllowedCharacters:
   //       (NSCharacterSet *)allowedCharacters
@@ -1173,7 +1204,6 @@ extension String {
   /// Returns a new string made from the `String` by replacing
   /// all characters not in the specified set with percent encoded
   /// characters.
-#if false
   public func addingPercentEncoding(
     withAllowedCharacters allowedCharacters: CharacterSet
   ) -> String? {
@@ -1190,7 +1220,6 @@ extension String {
       allowedCharacters
     )
   }
-#endif
 
   // - (NSString *)stringByAppendingFormat:(NSString *)format, ...
 
@@ -1209,7 +1238,7 @@ extension String {
   /// Returns a new string made by appending to the `String` a given string.
   @available(*, unavailable, message: "Use appendingPathComponent on URL instead.")
   public func appendingPathComponent(_ aString: String) -> String {
-    return _ns.stringByAppendingPathComponent(aString)
+    return _ns.appendingPathComponent(aString)
   }
 
   // - (NSString *)stringByAppendingPathExtension:(NSString *)ext
@@ -1224,7 +1253,7 @@ extension String {
     //
     // <rdar://problem/17902469> -[NSString stringByAppendingPathExtension] can
     // return nil
-    return _ns.stringByAppendingPathExtension(ext)
+    return _ns.appendingPathExtension(ext)
   }
 
   // - (NSString *)stringByAppendingString:(NSString *)aString
@@ -1242,7 +1271,7 @@ extension String {
   /// separator.
   @available(*, unavailable, message: "Use deletingLastPathComponent on URL instead.")
   public var deletingLastPathComponent: String {
-    return _ns.stringByDeletingLastPathComponent
+    return _ns.deletingLastPathComponent
   }
 
   // @property NSString* stringByDeletingPathExtension;
@@ -1251,7 +1280,7 @@ extension String {
   /// any, and only the last) from the `String`.
   @available(*, unavailable, message: "Use deletingPathExtension on URL instead.")
   public var deletingPathExtension: String {
-    return _ns.stringByDeletingPathExtension
+    return _ns.deletingPathExtension
   }
 
   // @property NSString* stringByExpandingTildeInPath;
@@ -1260,18 +1289,27 @@ extension String {
   /// component of the `String` to its full path value.
   @available(*, unavailable, message: "Use expandingTildeInPath on NSString instead.")
   public var expandingTildeInPath: String {
-    return _ns.stringByExpandingTildeInPath
+    return _ns.expandingTildeInPath
+  }
+
+  // - (NSString *)
+  //     stringByFoldingWithOptions:(StringCompareOptions)options
+  //     locale:(Locale *)locale
+
+  @available(*, unavailable, renamed: "folding(options:locale:)")
+  public func folding(
+    _ options: CompareOptions = [], locale: Locale?
+  ) -> String {
+    return folding(options: options, locale: locale)
   }
 
   /// Returns a string with the given character folding options
   /// applied.
-#if false
   public func folding(
     options: CompareOptions = [], locale: Locale?
   ) -> String {
     return _ns.folding(options: options, locale: locale)
   }
-#endif
 
   // - (NSString *)stringByPaddingToLength:(NSUInteger)newLength
   //     withString:(NSString *)padString
@@ -1295,7 +1333,7 @@ extension String {
   /// all percent encoded sequences with the matching UTF-8
   /// characters.
   public var removingPercentEncoding: String? {
-    return _ns.stringByRemovingPercentEncoding
+    return _ns.removingPercentEncoding
   }
 
   // - (NSString *)
@@ -1343,6 +1381,22 @@ extension String {
 
   // @property NSString* stringByResolvingSymlinksInPath;
 
+  /// Returns a new string made from the `String` by resolving
+  /// all symbolic links and standardizing path.
+  @available(*, unavailable, message: "Use resolvingSymlinksInPath on URL instead.")
+  public var resolvingSymlinksInPath: String {
+    return _ns.resolvingSymlinksInPath
+  }
+
+  // @property NSString* stringByStandardizingPath;
+
+  /// Returns a new string made by removing extraneous path
+  /// components from the `String`.
+  @available(*, unavailable, message: "Use standardizingPath on URL instead.")
+  public var standardizingPath: String {
+    return _ns.standardizingPath
+  }
+
   // - (NSString *)stringByTrimmingCharactersInSet:(NSCharacterSet *)set
 
   /// Returns a new string made by removing from both ends of
@@ -1388,6 +1442,7 @@ extension String {
 
   /// An uppercase version of the string that is produced using the current
   /// locale.
+  @available(OSX 10.11, iOS 9.0, *)
   public var localizedUppercase: String {
     return _ns.localizedUppercase as String
   }
@@ -1440,13 +1495,14 @@ extension String {
 
   /// Perform string transliteration.
 #if false
+  @available(OSX 10.11, iOS 9.0, *)
   public func applyingTransform(
     _ transform: StringTransform, reverse: Bool
   ) -> String? {
     return _ns.applyingTransform(transform, reverse: reverse)
   }
 #endif
-
+    
   //===--- From the 10.10 release notes; not in public documentation ------===//
   // No need to make these unavailable on earlier OSes, since they can
   // forward trivially to rangeOfString.
@@ -1457,7 +1513,9 @@ extension String {
   /// Equivalent to `self.rangeOfString(other) != nil`
   public func contains(_ other: String) -> Bool {
     let r = self.range(of: other) != nil
-    _sanityCheck(r == _ns.contains(other))
+    if #available(OSX 10.10, iOS 8.0, *) {
+      _sanityCheck(r == _ns.contains(other))
+    }
     return r
   }
   
@@ -1473,12 +1531,14 @@ extension String {
   ///
   ///     self.rangeOf(
   ///       other, options: .CaseInsensitiveSearch,
-  ///       locale: Locale.current()) != nil
+  ///       locale: Locale.current) != nil
   public func localizedCaseInsensitiveContains(_ other: String) -> Bool {
     let r = self.range(
       of: other, options: .caseInsensitive, locale: Locale.current
     ) != nil
-    _sanityCheck(r == _ns.localizedCaseInsensitiveContains(other))
+    if #available(OSX 10.10, iOS 8.0, *) {
+      _sanityCheck(r == _ns.localizedCaseInsensitiveContains(other))
+    }
     return r
   }
 }

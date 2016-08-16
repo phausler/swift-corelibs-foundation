@@ -331,7 +331,7 @@ class TestNSURL : XCTestCase {
     func test_fileURLWithPath_isDirectory() {
         if !TestNSURL.setup_test_paths() {
             let error = strerror(errno)!
-            XCTFail("Failed to set up test paths: \(String(cString: error ))")
+            XCTFail("Failed to set up test paths: \(String(cString: error))")
         }
         
         // test with file that exists
@@ -473,7 +473,7 @@ class TestNSURLComponents : XCTestCase {
         for obj in getTestData()! {
             let testDict = obj as! [String: Any]
             let unencodedString = testDict[kURLTestUrlKey] as! String
-            let expectedString = NSString(string: unencodedString).stringByAddingPercentEncodingWithAllowedCharacters(.urlPathAllowed)!
+            let expectedString = NSString(string: unencodedString).addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)!
             guard let components = URLComponents(string: expectedString) else { continue }
             XCTAssertEqual(components.string!, expectedString, "should be the expected string (\(components.string!) != \(expectedString))")
         }

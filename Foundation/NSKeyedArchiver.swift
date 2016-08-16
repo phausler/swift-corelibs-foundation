@@ -685,7 +685,7 @@ open class NSKeyedArchiver : NSCoder {
             break
         case .CharPtr:
             let charpp = unsafeBitCast(addr, to: UnsafePointer<UnsafePointer<Int8>>.self)
-            encode(NSString(UTF8String: charpp.pointee))
+            encode(NSString(utf8String: charpp.pointee))
             break
         default:
             fatalError("NSKeyedArchiver.encodeValueOfObjCType: unknown type encoding ('\(type.rawValue)')")

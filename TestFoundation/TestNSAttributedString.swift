@@ -40,7 +40,7 @@ class TestNSAttributedString : XCTestCase {
         XCTAssertEqual(range.length, 0)
         XCTAssertEqual(attrs.count, 0)
 
-        let attribute = attrString.attribute("invalid", atIndex: 0, effectiveRange: &range)
+        let attribute = attrString.attribute("invalid", at: 0, effectiveRange: &range)
         XCTAssertNil(attribute)
         XCTAssertEqual(range.location, NSNotFound)
         XCTAssertEqual(range.length, 0)
@@ -64,12 +64,12 @@ class TestNSAttributedString : XCTestCase {
         XCTAssertEqual(range.length, attrString.length)
         XCTAssertEqual(value, "attribute.placeholder.value")
 
-        let invalidAttribute = attrString.attribute("invalid", atIndex: 0, effectiveRange: &range)
+        let invalidAttribute = attrString.attribute("invalid", at: 0, effectiveRange: &range)
         XCTAssertNil(invalidAttribute)
         XCTAssertEqual(range.location, NSNotFound)
         XCTAssertEqual(range.length, 0)
 
-        let attribute = attrString.attribute("attribute.placeholder.key", atIndex: 0, effectiveRange: &range)
+        let attribute = attrString.attribute("attribute.placeholder.key", at: 0, effectiveRange: &range)
         XCTAssertEqual(range.location, 0)
         XCTAssertEqual(range.length, attrString.length)
         guard let validAttribute = attribute as? NSString else {
@@ -95,11 +95,11 @@ class TestNSAttributedString : XCTestCase {
         let searchRange = NSRange(location: 0, length: attrString.length)
         var range = NSRange()
         
-        _ = attrString.attribute(attrKey, atIndex: 0, longestEffectiveRange: &range, inRange: searchRange)
+        _ = attrString.attribute(attrKey, at: 0, longestEffectiveRange: &range, in: searchRange)
         XCTAssertEqual(range.location, 0)
         XCTAssertEqual(range.length, 29)
         
-        _ = attrString.attributesAtIndex(0, longestEffectiveRange: &range, inRange: searchRange)
+        _ = attrString.attributes(at: 0, longestEffectiveRange: &range, in: searchRange)
         XCTAssertEqual(range.location, 0)
         XCTAssertEqual(range.length, 29)
     }

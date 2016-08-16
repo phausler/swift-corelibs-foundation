@@ -23,7 +23,7 @@ internal let kCFURLWindowsPathStyle = CFURLPathStyle.cfurlWindowsPathStyle
 
 private func _standardizedPath(_ path: String) -> String {
     if !path.absolutePath {
-        return path._nsObject.stringByStandardizingPath
+        return path._nsObject.standardizingPath
     }
     return path
 }
@@ -602,12 +602,12 @@ extension NSCharacterSet {
 extension NSString {
     
     // Returns a new string made from the receiver by replacing all characters not in the allowedCharacters set with percent encoded characters. UTF-8 encoding is used to determine the correct percent encoded characters. Entire URL strings cannot be percent-encoded. This method is intended to percent-encode an URL component or subcomponent string, NOT the entire URL string. Any characters in allowedCharacters outside of the 7-bit ASCII range are ignored.
-    public func stringByAddingPercentEncodingWithAllowedCharacters(_ allowedCharacters: CharacterSet) -> String? {
+    public func addingPercentEncoding(withAllowedCharacters allowedCharacters: CharacterSet) -> String? {
         return _CFStringCreateByAddingPercentEncodingWithAllowedCharacters(kCFAllocatorSystemDefault, self._cfObject, allowedCharacters._cfObject)._swiftObject
     }
     
     // Returns a new string made from the receiver by replacing all percent encoded sequences with the matching UTF-8 characters.
-    public var stringByRemovingPercentEncoding: String? {
+    public var removingPercentEncoding: String? {
         return _CFStringCreateByRemovingPercentEncoding(kCFAllocatorSystemDefault, self._cfObject)?._swiftObject
     }
 }
@@ -750,7 +750,7 @@ extension NSURL {
             absolutePath = selfPath
         } else {
             let workingDir = FileManager.default.currentDirectoryPath
-            absolutePath = workingDir._bridgeToObjectiveC().stringByAppendingPathComponent(selfPath)
+            absolutePath = workingDir._bridgeToObjectiveC().appendingPathComponent(selfPath)
         }
 
         
@@ -767,10 +767,10 @@ extension NSURL {
                 break
 
             case "..":
-                resolvedPath = resolvedPath._bridgeToObjectiveC().stringByDeletingLastPathComponent
+                resolvedPath = resolvedPath._bridgeToObjectiveC().deletingLastPathComponent
 
             default:
-                resolvedPath = resolvedPath._bridgeToObjectiveC().stringByAppendingPathComponent(component)
+                resolvedPath = resolvedPath._bridgeToObjectiveC().appendingPathComponent(component)
                 if let destination = FileManager.default._tryToResolveTrailingSymlinkInPath(resolvedPath) {
                     resolvedPath = destination
                 }
@@ -811,9 +811,9 @@ extension NSURL {
                 case ".":
                     break
                 case ".." where isAbsolutePath:
-                    result = result._bridgeToObjectiveC().stringByDeletingLastPathComponent
+                    result = result._bridgeToObjectiveC().deletingLastPathComponent
                 default:
-                    result = result._bridgeToObjectiveC().stringByAppendingPathComponent(component)
+                    result = result._bridgeToObjectiveC().appendingPathComponent(component)
             }
         }
 
