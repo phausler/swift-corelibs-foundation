@@ -1440,3 +1440,11 @@ extension String {
     }
 }
 #endif
+
+extension NSString : _StructTypeBridgeable {
+    public typealias _StructType = String
+    
+    public func _bridgeToSwift() -> _StructType {
+        return _StructType._unconditionallyBridgeFromObjectiveC(self)
+    }
+}

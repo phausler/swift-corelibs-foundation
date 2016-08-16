@@ -35,7 +35,7 @@ public protocol _ObjectTypeBridgeable : _ObjectBridgeable {
 
 /// - Note: This does not exist currently on Darwin but it is the inverse corrilation to the bridge types such that a 
 /// reference type can be converted via a callout to a conversion method.
-public protocol _StructTypeBridgeable {
+public protocol _StructTypeBridgeable : _StructBridgeable {
     associatedtype _StructType
     
     func _bridgeToSwift() -> _StructType

@@ -492,3 +492,10 @@ open class NSCountedSet : NSMutableSet {
     }
 }
 
+extension NSSet : _StructTypeBridgeable {
+    public typealias _StructType = Set<AnyHashable>
+    
+    public func _bridgeToSwift() -> _StructType {
+        return _StructType._unconditionallyBridgeFromObjectiveC(self)
+    }
+}

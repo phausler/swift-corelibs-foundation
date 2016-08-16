@@ -619,3 +619,10 @@ extension NSMutableDictionary {
 
 extension NSDictionary : ExpressibleByDictionaryLiteral { }
 
+extension NSDictionary : _StructTypeBridgeable {
+    public typealias _StructType = Dictionary<AnyHashable,Any>
+    
+    public func _bridgeToSwift() -> _StructType {
+        return _StructType._unconditionallyBridgeFromObjectiveC(self)
+    }
+}

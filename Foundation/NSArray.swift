@@ -857,3 +857,11 @@ extension NSArray : ExpressibleByArrayLiteral {
 //        
 //    }
 }
+
+extension NSArray : _StructTypeBridgeable {
+    public typealias _StructType = Array<Any>
+    
+    public func _bridgeToSwift() -> _StructType {
+        return _StructType._unconditionallyBridgeFromObjectiveC(self)
+    }
+}
