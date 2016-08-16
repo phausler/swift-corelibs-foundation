@@ -273,18 +273,18 @@ open class XMLNode: NSObject, NSCopying {
         }
     }
 
-    private var _objectValue: AnyObject? = nil
+    private var _objectValue: Any? = nil
 
     /*!
         @method objectValue
         @abstract Sets the content of the node. Setting the objectValue removes all existing children including processing instructions and comments. Setting the object value on an element creates a single text node child.
     */
-    open var objectValue: AnyObject? {
+    open var objectValue: Any? {
         get {
             if let value = _objectValue {
                 return value
             } else {
-                return stringValue?._bridgeToObjectiveC()
+                return stringValue
             }
         }
         set {

@@ -24,6 +24,10 @@ internal final class _NSCFArray : NSMutableArray {
         fatalError()
     }
     
+    required public convenience init(arrayLiteral elements: Any...) {
+        fatalError()
+    }
+    
     override var count: Int {
         return CFArrayGetCount(_cfObject)
     }

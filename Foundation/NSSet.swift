@@ -149,16 +149,22 @@ open class NSSet : NSObject, NSCopying, NSMutableCopying, NSSecureCoding, NSCodi
         buffer.deallocate(capacity: array.count)
     }
 
-    public convenience init(set: Set<NSObject>) {
+    public convenience init(set: Set<AnyHashable>) {
         self.init(set: set, copyItems: false)
     }
 
-    public convenience init(set: Set<NSObject>, copyItems flag: Bool) {
-        var array = set._bridgeToObjectiveC().allObjects
-        if (flag) {
-            array = array.map() { ($0 as! NSObject).copy() as! NSObject }
+    public convenience init(set: Set<AnyHashable>, copyItems flag: Bool) {
+        if flag {
+            self.init(array: set.map {
+                if let item = $0 as? NSObject {
+                    return item.copy()
+                } else {
+                    return $0
+                }
+            })
+        } else {
+            self.init(array: set.map { $0 })
         }
-        self.init(array: array)
     }
 }
 
@@ -409,7 +415,7 @@ open class NSCountedSet : NSMutableSet {
         }
     }
 
-    public convenience init(set: Set<NSObject>) {
+    public convenience init(set: Set<AnyHashable>) {
         self.init(array: set.map { $0 })
     }
 

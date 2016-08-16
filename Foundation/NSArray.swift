@@ -24,7 +24,7 @@ open class NSArray : NSObject, NSCopying, NSMutableCopying, NSSecureCoding, NSCo
         guard type(of: self) === NSArray.self || type(of: self) === NSMutableArray.self else {
            NSRequiresConcreteImplementation()
         }
-        return _storage[index]
+        return _SwiftValue.fetch(_storage[index])
     }
     
     public convenience override init() {
@@ -36,6 +36,10 @@ open class NSArray : NSObject, NSCopying, NSMutableCopying, NSSecureCoding, NSCo
         for idx in 0..<cnt {
             _storage.append(objects[idx])
         }
+    }
+    
+    required public convenience init(arrayLiteral elements: Any...) {
+        self.init(array: elements)
     }
     
     public required convenience init?(coder aDecoder: NSCoder) {
@@ -173,7 +177,7 @@ open class NSArray : NSObject, NSCopying, NSMutableCopying, NSSecureCoding, NSCo
     
     open func componentsJoined(by separator: String) -> String {
         // make certain to call NSObject's description rather than asking the string interpolator for the swift description
-        return allObjects.map { ($0 as! NSObject).description }.joined(separator: separator)
+        return allObjects.map { "\($0)" }.joined(separator: separator)
     }
 
     open func contains(_ anObject: Any) -> Bool {
@@ -197,12 +201,12 @@ open class NSArray : NSObject, NSCopying, NSMutableCopying, NSSecureCoding, NSCo
         let cnt = count
         for idx in 0..<cnt {
             let obj = self[idx]
-            if let string = obj as? NSString {
-                descriptions.append(string._swiftObject)
-            } else if let array = obj as? NSArray {
-                descriptions.append(array.description(withLocale: locale, indent: level + 1))
-            } else if let dict = obj as? NSDictionary {
-                descriptions.append(dict.description(withLocale: locale, indent: level + 1))
+            if let string = obj as? String {
+                descriptions.append(string)
+            } else if let array = obj as? [Any] {
+                descriptions.append(NSArray(array: array).description(withLocale: locale, indent: level + 1))
+            } else if let dict = obj as? [AnyHashable : Any] {
+                descriptions.append(dict._bridgeToObjectiveC().description(withLocale: locale, indent: level + 1))
             } else {
                 descriptions.append("\(obj)")
             }
@@ -844,4 +848,12 @@ extension NSArray : Sequence {
     final public func makeIterator() -> Iterator {
         return Iterator(self)
     }
+}
+
+extension NSArray : ExpressibleByArrayLiteral {
+    
+    /// Create an instance initialized with `elements`.
+//    required public convenience init(arrayLiteral elements: Any...) {
+//        
+//    }
 }

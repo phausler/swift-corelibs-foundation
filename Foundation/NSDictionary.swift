@@ -172,6 +172,10 @@ open class NSDictionary : NSObject, NSCopying, NSMutableCopying, NSSecureCoding,
         keyBuffer.deallocate(capacity: keys.count)
         valueBuffer.deallocate(capacity: objects.count)
     }
+    
+    public convenience init(dictionary otherDictionary: [AnyHashable : Any]) {
+        self.init(objects: otherDictionary.values.map { $0 }, forKeys: otherDictionary.keys.map { _SwiftValue.store($0) })
+    }
 
     open override func isEqual(_ object: AnyObject?) -> Bool {
         guard let otherDictionary = object as? NSDictionary else {
