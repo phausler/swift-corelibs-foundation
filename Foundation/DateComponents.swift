@@ -290,7 +290,7 @@ public func ==(lhs : DateComponents, rhs: DateComponents) -> Bool {
 
 // MARK: - Bridging
 
-extension DateComponents {
+extension DateComponents : _ObjectTypeBridgeable {
     public static func _isBridgedToObjectiveC() -> Bool {
         return true
     }

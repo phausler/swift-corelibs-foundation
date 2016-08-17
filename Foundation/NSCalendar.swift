@@ -1844,3 +1844,19 @@ extension CFCalendar : _NSBridgable, _SwiftBridgable {
     internal var _nsObject: NSType { return unsafeBitCast(self, to: NSType.self) }
     internal var _swiftObject: Calendar { return _nsObject._swiftObject }
 }
+
+extension NSCalendar : _StructTypeBridgeable {
+    public typealias _StructType = Calendar
+    
+    public func _bridgeToSwift() -> Calendar {
+        return Calendar._unconditionallyBridgeFromObjectiveC(self)
+    }
+}
+
+extension NSDateComponents : _StructTypeBridgeable {
+    public typealias _StructType = DateComponents
+    
+    public func _bridgeToSwift() -> DateComponents {
+        return DateComponents._unconditionallyBridgeFromObjectiveC(self)
+    }
+}

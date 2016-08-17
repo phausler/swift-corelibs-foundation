@@ -1167,3 +1167,27 @@ extension URL : _NSBridgable, _CFBridgable {
     internal var _cfObject: CFType { return _nsObject._cfObject }
 }
 
+extension NSURL : _StructTypeBridgeable {
+    public typealias _StructType = URL
+    
+    public func _bridgeToSwift() -> _StructType {
+        return _StructType._unconditionallyBridgeFromObjectiveC(self)
+    }
+}
+
+extension NSURLComponents : _StructTypeBridgeable {
+    public typealias _StructType = URLComponents
+    
+    public func _bridgeToSwift() -> _StructType {
+        return _StructType._unconditionallyBridgeFromObjectiveC(self)
+    }
+}
+
+extension NSURLQueryItem : _StructTypeBridgeable {
+    public typealias _StructType = URLQueryItem
+    
+    public func _bridgeToSwift() -> _StructType {
+        return _StructType._unconditionallyBridgeFromObjectiveC(self)
+    }
+}
+

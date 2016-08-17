@@ -177,7 +177,7 @@ public func <(lhs: DateInterval, rhs: DateInterval) -> Bool {
     return lhs.compare(rhs) == .orderedAscending
 }
 
-extension DateInterval {
+extension DateInterval : _ObjectTypeBridgeable {
     public static func _isBridgedToObjectiveC() -> Bool {
         return true
     }

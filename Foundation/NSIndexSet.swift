@@ -642,3 +642,10 @@ open class NSMutableIndexSet : NSIndexSet {
     open func shiftIndexesStarting(at index: Int, by delta: Int) { NSUnimplemented() }
 }
 
+extension NSIndexSet : _StructTypeBridgeable {
+    public typealias _StructType = IndexSet
+    
+    public func _bridgeToSwift() -> IndexSet {
+        return IndexSet._unconditionallyBridgeFromObjectiveC(self)
+    }
+}

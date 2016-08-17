@@ -267,3 +267,11 @@ extension Locale : _CFBridgable {
         return _bridgeToObjectiveC()._cfObject
     }
 }
+
+extension NSLocale : _StructTypeBridgeable {
+    public typealias _StructType = Locale
+    
+    public func _bridgeToSwift() -> Locale {
+        return Locale._unconditionallyBridgeFromObjectiveC(self)
+    }
+}

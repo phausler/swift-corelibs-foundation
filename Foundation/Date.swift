@@ -14,7 +14,7 @@ import CoreFoundation
 public struct Date : ReferenceConvertible, Comparable, Equatable, CustomStringConvertible {
     public typealias ReferenceType = NSDate
     
-    private var _time : TimeInterval
+    internal var _time : TimeInterval
     
     /// The number of seconds from 1 January 1970 to the reference date, 1 January 2001.
     public static let timeIntervalBetween1970AndReferenceDate = 978307200.0
@@ -195,4 +195,28 @@ public func +=(lhs: inout Date, rhs: TimeInterval) {
 
 public func -=(lhs: inout Date, rhs: TimeInterval) {
     lhs = lhs - rhs
+}
+
+extension Date : _ObjectTypeBridgeable {
+    @_semantics("convertToObjectiveC")
+    public func _bridgeToObjectiveC() -> NSDate {
+        return NSDate(timeIntervalSinceReferenceDate: _time)
+    }
+    
+    public static func _forceBridgeFromObjectiveC(_ x: NSDate, result: inout Date?) {
+        if !_conditionallyBridgeFromObjectiveC(x, result: &result) {
+            fatalError("Unable to bridge \(NSDate.self) to \(self)")
+        }
+    }
+    
+    public static func _conditionallyBridgeFromObjectiveC(_ x: NSDate, result: inout Date?) -> Bool {
+        result = Date(timeIntervalSinceReferenceDate: x.timeIntervalSinceReferenceDate)
+        return true
+    }
+    
+    public static func _unconditionallyBridgeFromObjectiveC(_ source: NSDate?) -> Date {
+        var result: Date? = nil
+        _forceBridgeFromObjectiveC(source!, result: &result)
+        return result!
+    }
 }

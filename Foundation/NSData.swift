@@ -949,3 +949,10 @@ extension NSMutableData {
         self.length = length
     }
 }
+
+extension NSData : _StructTypeBridgeable {
+    public typealias _StructType = Data
+    public func _bridgeToSwift() -> Data {
+        return Data._unconditionallyBridgeFromObjectiveC(self)
+    }
+}
