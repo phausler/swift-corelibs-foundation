@@ -491,6 +491,10 @@ open class NSNumber : NSValue {
     open func compare(_ otherNumber: NSNumber) -> ComparisonResult {
         return ._fromCF(CFNumberCompare(_cfObject, otherNumber._cfObject, nil))
     }
+    
+    open func isEqual(to number: NSNumber) -> Bool {
+        return compare(number) == .orderedSame
+    }
 
     open func description(withLocale locale: Locale?) -> String {
         let aLocale = locale
