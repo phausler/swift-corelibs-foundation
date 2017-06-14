@@ -504,6 +504,8 @@ CF_EXPORT void CFCharacterSetFast(CFMutableCharacterSetRef theSet);
 CF_EXPORT const void *_CFArrayCheckAndGetValueAtIndex(CFArrayRef array, CFIndex idx);
 CF_EXPORT void _CFArrayReplaceValues(CFMutableArrayRef array, CFRange range, const void *_Nullable * _Nullable newValues, CFIndex newCount);
 
+CF_EXPORT void CFSortIndexes(CFIndex *indexBuffer, CFIndex count, CFOptionFlags opts, CFComparisonResult (CF_NOESCAPE ^cmp)(CFIndex, CFIndex));
+
 
 /* Enumeration
  Call CFStartSearchPathEnumeration() once, then call

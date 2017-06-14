@@ -75,6 +75,8 @@
 		5B23AB891CE62D4D000DB898 /* ReferenceConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B23AB881CE62D4D000DB898 /* ReferenceConvertible.swift */; };
 		5B23AB8B1CE62F9B000DB898 /* PersonNameComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B23AB8A1CE62F9B000DB898 /* PersonNameComponents.swift */; };
 		5B23AB8D1CE63228000DB898 /* URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B23AB8C1CE63228000DB898 /* URL.swift */; };
+		5B26FDC61EF066C000C341FA /* OrderedSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B26FDC51EF066C000C341FA /* OrderedSet.swift */; };
+		5B26FDC81EF0704100C341FA /* TestOrderedSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B26FDC71EF0704100C341FA /* TestOrderedSet.swift */; };
 		5B2A98CD1D021886008A0B75 /* NSCFCharacterSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B2A98CC1D021886008A0B75 /* NSCFCharacterSet.swift */; };
 		5B2B59821C24D00500271109 /* CFStream.c in Sources */ = {isa = PBXBuildFile; fileRef = 5B5D89031BBC9BC300234F36 /* CFStream.c */; };
 		5B2B59831C24D00C00271109 /* CFSocketStream.c in Sources */ = {isa = PBXBuildFile; fileRef = 5B5D89871BBDB1B400234F36 /* CFSocketStream.c */; };
@@ -506,6 +508,8 @@
 		5B23AB881CE62D4D000DB898 /* ReferenceConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReferenceConvertible.swift; sourceTree = "<group>"; };
 		5B23AB8A1CE62F9B000DB898 /* PersonNameComponents.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersonNameComponents.swift; sourceTree = "<group>"; };
 		5B23AB8C1CE63228000DB898 /* URL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URL.swift; sourceTree = "<group>"; };
+		5B26FDC51EF066C000C341FA /* OrderedSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderedSet.swift; sourceTree = "<group>"; };
+		5B26FDC71EF0704100C341FA /* TestOrderedSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestOrderedSet.swift; sourceTree = "<group>"; };
 		5B2A98CC1D021886008A0B75 /* NSCFCharacterSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSCFCharacterSet.swift; sourceTree = "<group>"; };
 		5B40920F1D1B304C0022B067 /* NSStringEncodings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSStringEncodings.swift; sourceTree = "<group>"; };
 		5B4092111D1B30B40022B067 /* ExtraStringAPIs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExtraStringAPIs.swift; sourceTree = "<group>"; };
@@ -1429,6 +1433,7 @@
 				5B6F17931C48631C00935030 /* TestNSNumberFormatter.swift */,
 				D5C40F321CDA1D460005690C /* TestNSOperationQueue.swift */,
 				D834F9931C31C4060023812A /* TestNSOrderedSet.swift */,
+				5B26FDC71EF0704100C341FA /* TestOrderedSet.swift */,
 				4DC1D07F1C12EEEF00B5948A /* TestNSPipe.swift */,
 				7900433A1CACD33E00ECCBF1 /* TestNSPredicate.swift */,
 				400E22641C1A4E58007C5933 /* TestProcessInfo.swift */,
@@ -1635,6 +1640,7 @@
 			isa = PBXGroup;
 			children = (
 				EADE0B6E1BD15DFF00C49C64 /* NSOrderedSet.swift */,
+				5B26FDC51EF066C000C341FA /* OrderedSet.swift */,
 				5BDC3FC91BCF176100ED97BB /* NSCFArray.swift */,
 				EADE0B631BD15DFF00C49C64 /* NSIndexSet.swift */,
 				5B8BA1611D0B773A00938C27 /* IndexSet.swift */,
@@ -2169,6 +2175,7 @@
 				5BF7AEB61BCD51F9008F214A /* ProcessInfo.swift in Sources */,
 				EADE0BB31BD15E0000C49C64 /* NSRegularExpression.swift in Sources */,
 				EADE0BA41BD15E0000C49C64 /* NSLengthFormatter.swift in Sources */,
+				5B26FDC61EF066C000C341FA /* OrderedSet.swift in Sources */,
 				5BDC3FCA1BCF176100ED97BB /* NSCFArray.swift in Sources */,
 				B9974B961EDF4A22007F15B8 /* TransferState.swift in Sources */,
 				EADE0BB21BD15E0000C49C64 /* Progress.swift in Sources */,
@@ -2341,6 +2348,7 @@
 				5B13B3381C582D4C00651CE2 /* TestNSNotificationQueue.swift in Sources */,
 				CC5249C01D341D23007CB54D /* TestUnitConverter.swift in Sources */,
 				5B13B3331C582D4C00651CE2 /* TestNSJSONSerialization.swift in Sources */,
+				5B26FDC81EF0704100C341FA /* TestOrderedSet.swift in Sources */,
 				5B13B33C1C582D4C00651CE2 /* TestNSOrderedSet.swift in Sources */,
 				90E645DF1E4C89A400D0D47C /* TestNSCache.swift in Sources */,
 				5B13B34A1C582D4C00651CE2 /* TestNSURL.swift in Sources */,
