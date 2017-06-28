@@ -265,21 +265,21 @@ class TestNSString : XCTestCase {
 
     func test_FromNullTerminatedCStringInASCII() {
         let bytes = mockASCIIStringBytes + [0x00]
-        let string = NSString(CString: bytes.map { Int8(bitPattern: $0) }, encoding: String.Encoding.ascii.rawValue)
+        let string = NSString(cString: bytes.map { Int8(bitPattern: $0) }, encoding: String.Encoding.ascii.rawValue)
         XCTAssertNotNil(string)
         XCTAssertTrue(string?.isEqual(to: mockASCIIString) ?? false)
     }
 
     func test_FromNullTerminatedCStringInUTF8() {
         let bytes = mockUTF8StringBytes + [0x00]
-        let string = NSString(CString: bytes.map { Int8(bitPattern: $0) }, encoding: String.Encoding.utf8.rawValue)
+        let string = NSString(cString: bytes.map { Int8(bitPattern: $0) }, encoding: String.Encoding.utf8.rawValue)
         XCTAssertNotNil(string)
         XCTAssertTrue(string?.isEqual(to: mockUTF8String) ?? false)
     }
 
     func test_FromMalformedNullTerminatedCStringInUTF8() {
         let bytes = mockMalformedUTF8StringBytes + [0x00]
-        let string = NSString(CString: bytes.map { Int8(bitPattern: $0) }, encoding: String.Encoding.utf8.rawValue)
+        let string = NSString(cString: bytes.map { Int8(bitPattern: $0) }, encoding: String.Encoding.utf8.rawValue)
         XCTAssertNil(string)
     }
 
@@ -312,7 +312,7 @@ class TestNSString : XCTestCase {
       do {
           var encoding: UInt = 0
           let string = try NSString(contentsOf: testFileURL, usedEncoding: &encoding)
-          XCTAssertEqual(string, "NSString fromURL usedEncoding test with UTF16 BE file", "Wrong result when reading UTF16BE file")
+          XCTAssertEqual(string, NSString(string: "NSString fromURL usedEncoding test with UTF16 BE file"), "Wrong result when reading UTF16BE file")
           XCTAssertEqual(encoding, String.Encoding.utf16BigEndian.rawValue, "Wrong encoding detected from UTF16BE file")
       } catch {
           XCTFail("Unable to init NSString from contentsOf:usedEncoding:")
@@ -328,7 +328,7 @@ class TestNSString : XCTestCase {
       do {
           var encoding: UInt = 0
           let string = try NSString(contentsOf: testFileURL, usedEncoding: &encoding)
-          XCTAssertEqual(string, "NSString fromURL usedEncoding test with UTF16 LE file", "Wrong result when reading UTF16LE file")
+          XCTAssertEqual(string, NSString(string: "NSString fromURL usedEncoding test with UTF16 LE file"), "Wrong result when reading UTF16LE file")
           XCTAssertEqual(encoding, String.Encoding.utf16LittleEndian.rawValue, "Wrong encoding detected from UTF16LE file")
       } catch {
           XCTFail("Unable to init NSString from contentOf:usedEncoding:")

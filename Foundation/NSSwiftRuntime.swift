@@ -298,3 +298,15 @@ extension Array {
 #else
     internal typealias _DarwinCompatibleBoolean = Bool
 #endif
+
+/// Internal helpers for implementing factory patterns
+
+internal protocol _NSFactory {
+    init(factory: @autoclosure () -> Self)
+}
+
+extension _NSFactory {
+    init(factory: @autoclosure () -> Self) {
+        self = factory()
+    }
+}

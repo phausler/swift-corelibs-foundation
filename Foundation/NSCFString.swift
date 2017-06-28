@@ -11,10 +11,6 @@
 import CoreFoundation
 
 internal class _NSCFString : NSMutableString {
-    required init(characters: UnsafePointer<unichar>, length: Int) {
-        fatalError()
-    }
-
     required init?(coder aDecoder: NSCoder) {
         fatalError()
     }
@@ -27,19 +23,6 @@ internal class _NSCFString : NSMutableString {
         fatalError()
     }
 
-    required init(capacity: Int) {
-        fatalError()
-    }
-
-    required init(string aString: String) {
-        fatalError()
-    }
-    
-    deinit {
-        _CFDeinit(self)
-        _CFZeroUnsafeIvars(&_storage)
-    }
-    
     override var length: Int {
         return CFStringGetLength(unsafeBitCast(self, to: CFString.self))
     }
@@ -54,6 +37,14 @@ internal class _NSCFString : NSMutableString {
     
     override var classForCoder: AnyClass {
         return NSMutableString.self
+    }
+    
+    override func _fastCStringContents(_ nullTerminationRequired: Bool) -> UnsafePointer<Int8>? {
+        return CFStringGetCStringPtr(_unsafeReferenceCast(self, to: CFString.self), CFStringGetSystemEncoding())
+    }
+    
+    override func _fastCharacterContents() -> UnsafePointer<unichar>? {
+        return CFStringGetCharactersPtr(_unsafeReferenceCast(self, to: CFString.self))
     }
 }
 
@@ -203,7 +194,7 @@ internal func _CFSwiftStringFastCStringContents(_ str: AnyObject, _ nullTerminat
 }
 
 internal func _CFSwiftStringFastContents(_ str: AnyObject) -> UnsafePointer<UniChar>? {
-    return (str as! NSString)._fastContents
+    return (str as! NSString)._fastCharacterContents()
 }
 
 internal func _CFSwiftStringGetCString(_ str: AnyObject, buffer: UnsafeMutablePointer<Int8>, maxLength: Int, encoding: CFStringEncoding) -> Bool {
@@ -211,7 +202,7 @@ internal func _CFSwiftStringGetCString(_ str: AnyObject, buffer: UnsafeMutablePo
 }
 
 internal func _CFSwiftStringIsUnicode(_ str: AnyObject) -> Bool {
-    return (str as! NSString)._encodingCantBeStoredInEightBitCFString
+    return (str as! NSString)._encodingCantBeStoredInEightBitCFString()
 }
 
 internal func _CFSwiftStringInsert(_ str: AnyObject, index: CFIndex, inserted: AnyObject) {
