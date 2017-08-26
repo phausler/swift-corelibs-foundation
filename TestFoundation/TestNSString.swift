@@ -9,30 +9,30 @@
 
 
 #if DEPLOYMENT_RUNTIME_OBJC || os(Linux)
-import Foundation
-import XCTest
+    import Foundation
+    import XCTest
 #else
-import SwiftFoundation
-import SwiftXCTest
+    import SwiftFoundation
+    import SwiftXCTest
 #endif
 
 import CoreFoundation
 
 #if os(OSX) || os(iOS)
-internal let kCFStringEncodingMacRoman =  CFStringBuiltInEncodings.macRoman.rawValue
-internal let kCFStringEncodingWindowsLatin1 =  CFStringBuiltInEncodings.windowsLatin1.rawValue
-internal let kCFStringEncodingISOLatin1 =  CFStringBuiltInEncodings.isoLatin1.rawValue
-internal let kCFStringEncodingNextStepLatin =  CFStringBuiltInEncodings.nextStepLatin.rawValue
-internal let kCFStringEncodingASCII =  CFStringBuiltInEncodings.ASCII.rawValue
-internal let kCFStringEncodingUnicode =  CFStringBuiltInEncodings.unicode.rawValue
-internal let kCFStringEncodingUTF8 =  CFStringBuiltInEncodings.UTF8.rawValue
-internal let kCFStringEncodingNonLossyASCII =  CFStringBuiltInEncodings.nonLossyASCII.rawValue
-internal let kCFStringEncodingUTF16 = CFStringBuiltInEncodings.UTF16.rawValue
-internal let kCFStringEncodingUTF16BE =  CFStringBuiltInEncodings.UTF16BE.rawValue
-internal let kCFStringEncodingUTF16LE =  CFStringBuiltInEncodings.UTF16LE.rawValue
-internal let kCFStringEncodingUTF32 =  CFStringBuiltInEncodings.UTF32.rawValue
-internal let kCFStringEncodingUTF32BE =  CFStringBuiltInEncodings.UTF32BE.rawValue
-internal let kCFStringEncodingUTF32LE =  CFStringBuiltInEncodings.UTF32LE.rawValue
+    internal let kCFStringEncodingMacRoman =  CFStringBuiltInEncodings.macRoman.rawValue
+    internal let kCFStringEncodingWindowsLatin1 =  CFStringBuiltInEncodings.windowsLatin1.rawValue
+    internal let kCFStringEncodingISOLatin1 =  CFStringBuiltInEncodings.isoLatin1.rawValue
+    internal let kCFStringEncodingNextStepLatin =  CFStringBuiltInEncodings.nextStepLatin.rawValue
+    internal let kCFStringEncodingASCII =  CFStringBuiltInEncodings.ASCII.rawValue
+    internal let kCFStringEncodingUnicode =  CFStringBuiltInEncodings.unicode.rawValue
+    internal let kCFStringEncodingUTF8 =  CFStringBuiltInEncodings.UTF8.rawValue
+    internal let kCFStringEncodingNonLossyASCII =  CFStringBuiltInEncodings.nonLossyASCII.rawValue
+    internal let kCFStringEncodingUTF16 = CFStringBuiltInEncodings.UTF16.rawValue
+    internal let kCFStringEncodingUTF16BE =  CFStringBuiltInEncodings.UTF16BE.rawValue
+    internal let kCFStringEncodingUTF16LE =  CFStringBuiltInEncodings.UTF16LE.rawValue
+    internal let kCFStringEncodingUTF32 =  CFStringBuiltInEncodings.UTF32.rawValue
+    internal let kCFStringEncodingUTF32BE =  CFStringBuiltInEncodings.UTF32BE.rawValue
+    internal let kCFStringEncodingUTF32LE =  CFStringBuiltInEncodings.UTF32LE.rawValue
 #endif
 
 
@@ -73,7 +73,7 @@ class TestNSString : XCTestCase {
             ("test_FromContentOfFile",test_FromContentOfFile),
             ("test_swiftStringUTF16", test_swiftStringUTF16),
             // This test takes forever on build servers; it has been seen up to 1852.084 seconds
-//            ("test_completePathIntoString", test_completePathIntoString),
+            //            ("test_completePathIntoString", test_completePathIntoString),
             ("test_stringByTrimmingCharactersInSet", test_stringByTrimmingCharactersInSet),
             ("test_initializeWithFormat", test_initializeWithFormat),
             ("test_initializeWithFormat2", test_initializeWithFormat2),
@@ -102,7 +102,7 @@ class TestNSString : XCTestCase {
             ("test_substringWithRange", test_substringWithRange),
         ]
     }
-
+    
     func test_boolValue() {
         let trueStrings: [NSString] = ["t", "true", "TRUE", "tRuE", "yes", "YES", "1", "+000009"]
         for string in trueStrings {
@@ -131,67 +131,67 @@ class TestNSString : XCTestCase {
         let cluster: NSString = "✌🏾"
         XCTAssertEqual(cluster.length, 3)
     }
-
+    
     func test_integerValue() {
         let string1: NSString = "123"
         XCTAssertEqual(string1.integerValue, 123)
-
+        
         let string2: NSString = "123a"
         XCTAssertEqual(string2.integerValue, 123)
-
+        
         let string3: NSString = "-123a"
         XCTAssertEqual(string3.integerValue, -123)
-
+        
         let string4: NSString = "a123"
         XCTAssertEqual(string4.integerValue, 0)
-
+        
         let string5: NSString = "+123"
         XCTAssertEqual(string5.integerValue, 123)
-
+        
         let string6: NSString = "++123"
         XCTAssertEqual(string6.integerValue, 0)
-
+        
         let string7: NSString = "-123"
         XCTAssertEqual(string7.integerValue, -123)
-
+        
         let string8: NSString = "--123"
         XCTAssertEqual(string8.integerValue, 0)
-
+        
         let string9: NSString = "999999999999999999999999999999"
         XCTAssertEqual(string9.integerValue, Int.max)
-
+        
         let string10: NSString = "-999999999999999999999999999999"
         XCTAssertEqual(string10.integerValue, Int.min)
     }
-
+    
     func test_intValue() {
         let string1: NSString = "123"
         XCTAssertEqual(string1.intValue, 123)
-
+        
         let string2: NSString = "123a"
         XCTAssertEqual(string2.intValue, 123)
-
+        
         let string3: NSString = "-123a"
         XCTAssertEqual(string3.intValue, -123)
-
+        
         let string4: NSString = "a123"
         XCTAssertEqual(string4.intValue, 0)
-
+        
         let string5: NSString = "+123"
         XCTAssertEqual(string5.intValue, 123)
-
+        
         let string6: NSString = "++123"
         XCTAssertEqual(string6.intValue, 0)
-
+        
         let string7: NSString = "-123"
         XCTAssertEqual(string7.intValue, -123)
-
+        
         let string8: NSString = "--123"
         XCTAssertEqual(string8.intValue, 0)
-
+        
         let string9: NSString = "999999999999999999999999999999"
         XCTAssertEqual(string9.intValue, Int32.max)
-
+        
         let string10: NSString = "-999999999999999999999999999999"
         XCTAssertEqual(string10.intValue, Int32.min)
     }
@@ -201,7 +201,7 @@ class TestNSString : XCTestCase {
         let swiftString = "literal"
         XCTAssertTrue(string.isEqual(to: swiftString))
     }
-  
+    
     func test_isEqualToObjectWithNSString() {
         let string1: NSString = "literal"
         let string2: NSString = "literal"
@@ -209,37 +209,37 @@ class TestNSString : XCTestCase {
     }
     
     func test_isNotEqualToObjectWithNSNumber() {
-      let string: NSString = "5"
-      let number: NSNumber = 5
-      XCTAssertFalse(string.isEqual(number))
+        let string: NSString = "5"
+        let number: NSNumber = 5
+        XCTAssertFalse(string.isEqual(number))
     }
-
+    
     internal let mockASCIIStringBytes: [UInt8] = [0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x20, 0x53, 0x77, 0x69, 0x66, 0x74, 0x21]
     internal let mockASCIIString = "Hello Swift!"
     internal let mockUTF8StringBytes: [UInt8] = [0x49, 0x20, 0xE2, 0x9D, 0xA4, 0xEF, 0xB8, 0x8F, 0x20, 0x53, 0x77, 0x69, 0x66, 0x74]
     internal let mockUTF8String = "I ❤️ Swift"
     internal let mockMalformedUTF8StringBytes: [UInt8] = [0xFF]
-
+    
     func test_FromASCIIData() {
         let bytes = mockASCIIStringBytes
         let string = NSString(bytes: bytes, length: bytes.count, encoding: String.Encoding.ascii.rawValue)
         XCTAssertNotNil(string)
         XCTAssertTrue(string?.isEqual(to: mockASCIIString) ?? false)
     }
-
+    
     func test_FromUTF8Data() {
         let bytes = mockUTF8StringBytes
         let string = NSString(bytes: bytes, length: bytes.count, encoding: String.Encoding.utf8.rawValue)
         XCTAssertNotNil(string)
         XCTAssertTrue(string?.isEqual(to: mockUTF8String) ?? false)
     }
-
+    
     func test_FromMalformedUTF8Data() {
         let bytes = mockMalformedUTF8StringBytes
         let string = NSString(bytes: bytes, length: bytes.count, encoding: String.Encoding.utf8.rawValue)
         XCTAssertNil(string)
     }
-
+    
     func test_FromASCIINSData() {
         let bytes = mockASCIIStringBytes
         let data = Data(bytes: bytes, count: bytes.count)
@@ -247,7 +247,7 @@ class TestNSString : XCTestCase {
         XCTAssertNotNil(string)
         XCTAssertTrue(string?.isEqual(to: mockASCIIString) ?? false)
     }
-
+    
     func test_FromUTF8NSData() {
         let bytes = mockUTF8StringBytes
         let data = Data(bytes: bytes, count: bytes.count)
@@ -255,40 +255,40 @@ class TestNSString : XCTestCase {
         XCTAssertNotNil(string)
         XCTAssertTrue(string?.isEqual(to: mockUTF8String) ?? false)
     }
-
+    
     func test_FromMalformedUTF8NSData() {
         let bytes = mockMalformedUTF8StringBytes
         let data = Data(bytes: bytes, count: bytes.count)
         let string = NSString(data: data, encoding: String.Encoding.utf8.rawValue)
         XCTAssertNil(string)
     }
-
+    
     func test_FromNullTerminatedCStringInASCII() {
         let bytes = mockASCIIStringBytes + [0x00]
         let string = NSString(cString: bytes.map { Int8(bitPattern: $0) }, encoding: String.Encoding.ascii.rawValue)
         XCTAssertNotNil(string)
         XCTAssertTrue(string?.isEqual(to: mockASCIIString) ?? false)
     }
-
+    
     func test_FromNullTerminatedCStringInUTF8() {
         let bytes = mockUTF8StringBytes + [0x00]
         let string = NSString(cString: bytes.map { Int8(bitPattern: $0) }, encoding: String.Encoding.utf8.rawValue)
         XCTAssertNotNil(string)
         XCTAssertTrue(string?.isEqual(to: mockUTF8String) ?? false)
     }
-
+    
     func test_FromMalformedNullTerminatedCStringInUTF8() {
         let bytes = mockMalformedUTF8StringBytes + [0x00]
         let string = NSString(cString: bytes.map { Int8(bitPattern: $0) }, encoding: String.Encoding.utf8.rawValue)
         XCTAssertNil(string)
     }
-
+    
     func test_FromContentsOfURL() {
         guard let testFileURL = testBundle().url(forResource: "NSStringTestData", withExtension: "txt") else {
             XCTFail("URL for NSStringTestData.txt is nil")
             return
         }
-
+        
         do {
             let string = try NSString(contentsOf: testFileURL, encoding: String.Encoding.utf8.rawValue)
             XCTAssertEqual(string, "swift-corelibs-foundation")
@@ -302,71 +302,65 @@ class TestNSString : XCTestCase {
             XCTFail("Unable to init NSString from contentsOf:encoding:")
         }
     }
-
+    
     func test_FromContentsOfURLUsedEncodingUTF16BE() {
-      guard let testFileURL = testBundle().url(forResource: "NSString-UTF16-BE-data", withExtension: "txt") else {
-        XCTFail("URL for NSString-UTF16-BE-data.txt is nil")
-        return
-      }
-
-      do {
-          var encoding: UInt = 0
-          let string = try NSString(contentsOf: testFileURL, usedEncoding: &encoding)
-          XCTAssertEqual(string, NSString(string: "NSString fromURL usedEncoding test with UTF16 BE file"), "Wrong result when reading UTF16BE file")
-          XCTAssertEqual(encoding, String.Encoding.utf16BigEndian.rawValue, "Wrong encoding detected from UTF16BE file")
-      } catch {
-          XCTFail("Unable to init NSString from contentsOf:usedEncoding:")
-      }
+        guard let testFileURL = testBundle().url(forResource: "NSString-UTF16-BE-data", withExtension: "txt") else {
+            XCTFail("URL for NSString-UTF16-BE-data.txt is nil")
+            return
+        }
+        
+        do {
+            var encoding: UInt = 0
+            let string = try NSString(contentsOf: testFileURL, usedEncoding: &encoding)
+            XCTAssertEqual(string, NSString(string: "NSString fromURL usedEncoding test with UTF16 BE file"), "Wrong result when reading UTF16BE file")
+            XCTAssertEqual(encoding, String.Encoding.unicode.rawValue, "Wrong encoding detected from UTF16BE file")
+        } catch {
+            XCTFail("Unable to init NSString from contentsOf:usedEncoding:")
+        }
     }
-
+    
     func test_FromContentsOfURLUsedEncodingUTF16LE() {
-      guard let testFileURL = testBundle().url(forResource: "NSString-UTF16-LE-data", withExtension: "txt") else {
-        XCTFail("URL for NSString-UTF16-LE-data.txt is nil")
-        return
-      }
-
-      do {
-          var encoding: UInt = 0
-          let string = try NSString(contentsOf: testFileURL, usedEncoding: &encoding)
-          XCTAssertEqual(string, NSString(string: "NSString fromURL usedEncoding test with UTF16 LE file"), "Wrong result when reading UTF16LE file")
-          XCTAssertEqual(encoding, String.Encoding.utf16LittleEndian.rawValue, "Wrong encoding detected from UTF16LE file")
-      } catch {
-          XCTFail("Unable to init NSString from contentOf:usedEncoding:")
-      }
+        guard let testFileURL = testBundle().url(forResource: "NSString-UTF16-LE-data", withExtension: "txt") else {
+            XCTFail("URL for NSString-UTF16-LE-data.txt is nil")
+            return
+        }
+        
+        do {
+            var encoding: UInt = 0
+            let string = try NSString(contentsOf: testFileURL, usedEncoding: &encoding)
+            XCTAssertEqual(string, NSString(string: "NSString fromURL usedEncoding test with UTF16 LE file"), "Wrong result when reading UTF16LE file")
+            XCTAssertEqual(encoding, String.Encoding.unicode.rawValue, "Wrong encoding detected from UTF16LE file")
+        } catch {
+            XCTFail("Unable to init NSString from contentOf:usedEncoding:")
+        }
     }
-
+    
     func test_FromContentsOfURLUsedEncodingUTF32BE() {
-      guard let testFileURL = testBundle().url(forResource: "NSString-UTF32-BE-data", withExtension: "txt") else {
-        XCTFail("URL for NSString-UTF32-BE-data.txt is nil")
-        return
-      }
-
-      do {
-         var encoding: UInt = 0
-         let string = try NSString(contentsOf: testFileURL, usedEncoding: &encoding)
-         XCTAssertEqual(string, "NSString fromURL usedEncoding test with UTF32 BE file", "Wrong result when reading UTF32BE file")
-         XCTAssertEqual(encoding, String.Encoding.utf32BigEndian.rawValue, "Wrong encoding detected from UTF32BE file")
-      } catch {
-          XCTFail("Unable to init NSString from contentOf:usedEncoding:")
-      }
+        guard let testFileURL = testBundle().url(forResource: "NSString-UTF32-BE-data", withExtension: "txt") else {
+            XCTFail("URL for NSString-UTF32-BE-data.txt is nil")
+            return
+        }
+        
+        var encoding: UInt = 0
+        XCTAssertThrowsError(try NSString(contentsOf: testFileURL, usedEncoding: &encoding))
     }
-
+    
     func test_FromContentsOfURLUsedEncodingUTF32LE() {
-      guard let testFileURL = testBundle().url(forResource: "NSString-UTF32-LE-data", withExtension: "txt") else {
-        XCTFail("URL for NSString-UTF32-LE-data.txt is nil")
-        return
-      }
-
-      do {
-         var encoding: UInt = 0
-         let string = try NSString(contentsOf: testFileURL, usedEncoding: &encoding)
-         XCTAssertEqual(string, "NSString fromURL usedEncoding test with UTF32 LE file", "Wrong result when reading UTF32LE file")
-         XCTAssertEqual(encoding, String.Encoding.utf32LittleEndian.rawValue, "Wrong encoding detected from UTF32LE file")
-      } catch {
-          XCTFail("Unable to init NSString from contentOf:usedEncoding:")
-      }
+        guard let testFileURL = testBundle().url(forResource: "NSString-UTF32-LE-data", withExtension: "txt") else {
+            XCTFail("URL for NSString-UTF32-LE-data.txt is nil")
+            return
+        }
+        
+        do {
+            var encoding: UInt = 0
+            let string = try NSString(contentsOf: testFileURL, usedEncoding: &encoding)
+            XCTAssertEqual(string, "\0N\0S\0S\0t\0r\0i\0n\0g\0 \0f\0r\0o\0m\0U\0R\0L\0 \0u\0s\0e\0d\0E\0n\0c\0o\0d\0i\0n\0g\0 \0t\0e\0s\0t\0 \0w\0i\0t\0h\0 \0U\0T\0F\03\02\0 \0L\0E\0 \0f\0i\0l\0e\0")
+            XCTAssertEqual(encoding, String.Encoding.unicode.rawValue, "Wrong encoding detected from UTF32LE file")
+        } catch {
+            XCTFail("Unable to init NSString from contentOf:usedEncoding:")
+        }
     }
-
+    
     func test_FromContentOfFile() {
         let testFilePath = testBundle().path(forResource: "NSStringTestData", ofType: "txt")
         XCTAssertNotNil(testFilePath)
@@ -378,13 +372,13 @@ class TestNSString : XCTestCase {
             XCTFail("Unable to init NSString from contentsOfFile:encoding:")
         }
     }
-
+    
     func test_uppercaseString() {
         XCTAssertEqual(NSString(stringLiteral: "abcd").uppercased, "ABCD")
         XCTAssertEqual(NSString(stringLiteral: "ａｂｃｄ").uppercased, "ＡＢＣＤ") // full-width
         XCTAssertEqual(NSString(stringLiteral: "абВГ").uppercased, "АБВГ")
         XCTAssertEqual(NSString(stringLiteral: "たちつてと").uppercased, "たちつてと")
-
+        
         // Special casing (see swift/validation-tests/stdlib/NSStringAPI.swift)
         XCTAssertEqual(NSString(stringLiteral: "\u{0069}").uppercased(with: Locale(identifier: "en")), "\u{0049}")
         // Currently fails; likely there are locale loading issues that are preventing this from functioning correctly
@@ -392,13 +386,13 @@ class TestNSString : XCTestCase {
         XCTAssertEqual(NSString(stringLiteral: "\u{00df}").uppercased, "\u{0053}\u{0053}")
         XCTAssertEqual(NSString(stringLiteral: "\u{fb01}").uppercased, "\u{0046}\u{0049}")
     }
-
+    
     func test_lowercaseString() {
         XCTAssertEqual(NSString(stringLiteral: "abCD").lowercased, "abcd")
         XCTAssertEqual(NSString(stringLiteral: "ＡＢＣＤ").lowercased, "ａｂｃｄ") // full-width
         XCTAssertEqual(NSString(stringLiteral: "aБВГ").lowercased, "aбвг")
         XCTAssertEqual(NSString(stringLiteral: "たちつてと").lowercased, "たちつてと")
-
+        
         // Special casing (see swift/validation-tests/stdlib/NSStringAPI.swift)
         XCTAssertEqual(NSString(stringLiteral: "\u{0130}").lowercased(with: Locale(identifier: "en")), "\u{0069}\u{0307}")
         // Currently fails; likely there are locale loading issues that are preventing this from functioning correctly
@@ -407,40 +401,40 @@ class TestNSString : XCTestCase {
         // Currently fails; likely there are locale loading issues that are preventing this from functioning correctly
         // XCTAssertEqual(NSString(stringLiteral: "\u{0049}\u{0307}").lowercaseStringWithLocale(NSLocale(localeIdentifier: "tr")), "\u{0069}")
     }
-
+    
     func test_capitalizedString() {
         XCTAssertEqual(NSString(stringLiteral: "foo Foo fOO FOO").capitalized, "Foo Foo Foo Foo")
         XCTAssertEqual(NSString(stringLiteral: "жжж").capitalized, "Жжж")
     }
-
+    
     func test_longLongValue() {
         let string1: NSString = "123"
         XCTAssertEqual(string1.longLongValue, 123)
-
+        
         let string2: NSString = "123a"
         XCTAssertEqual(string2.longLongValue, 123)
-
+        
         let string3: NSString = "-123a"
         XCTAssertEqual(string3.longLongValue, -123)
-
+        
         let string4: NSString = "a123"
         XCTAssertEqual(string4.longLongValue, 0)
-
+        
         let string5: NSString = "+123"
         XCTAssertEqual(string5.longLongValue, 123)
-
+        
         let string6: NSString = "++123"
         XCTAssertEqual(string6.longLongValue, 0)
-
+        
         let string7: NSString = "-123"
         XCTAssertEqual(string7.longLongValue, -123)
-
+        
         let string8: NSString = "--123"
         XCTAssertEqual(string8.longLongValue, 0)
-
+        
         let string9: NSString = "999999999999999999999999999999"
         XCTAssertEqual(string9.longLongValue, Int64.max)
-
+        
         let string10: NSString = "-999999999999999999999999999999"
         XCTAssertEqual(string10.longLongValue, Int64.min)
     }
@@ -465,13 +459,13 @@ class TestNSString : XCTestCase {
     // This test verifies that CFStringGetBytes with a UTF16 encoding works on an NSString backed by a Swift string
     func test_swiftStringUTF16() {
         #if os(OSX) || os(iOS)
-        let kCFStringEncodingUTF16 = CFStringBuiltInEncodings.UTF16.rawValue
+            let kCFStringEncodingUTF16 = CFStringBuiltInEncodings.UTF16.rawValue
         #endif
-
+        
         let testString = "hello world"
         let string = NSString(string: testString)
         let cfString = unsafeBitCast(string, to: CFString.self)
-
+        
         // Get the bytes as UTF16
         let reservedLength = 50
         var buf : [UInt8] = []
@@ -480,7 +474,7 @@ class TestNSString : XCTestCase {
         let _ = buf.withUnsafeMutableBufferPointer { p in
             CFStringGetBytes(cfString, CFRangeMake(0, CFStringGetLength(cfString)), CFStringEncoding(kCFStringEncodingUTF16), 0, false, p.baseAddress, reservedLength, &usedLen)
         }
-
+        
         // Make a new string out of it
         let newCFString = CFStringCreateWithBytes(nil, buf, usedLen, CFStringEncoding(kCFStringEncodingUTF16), false)
         let newString = unsafeBitCast(newCFString, to: NSString.self)
@@ -501,11 +495,11 @@ class TestNSString : XCTestCase {
             XCTAssert(false, "Could not create temp files for testing.")
             return
         }
-
+        
         let tmpPath = { (path: String) -> String in
             return NSTemporaryDirectory() + "\(path)"
         }
-
+        
         do {
             let path: String = tmpPath("")
             var outName: String = ""
@@ -514,7 +508,7 @@ class TestNSString : XCTestCase {
             _ = try FileManager.default.contentsOfDirectory(at: URL(string: path)!, includingPropertiesForKeys: nil, options: [])
             XCTAssert(outName == "/", "If NSString is valid path to directory which has '/' suffix then outName is '/'.")
             // This assert fails on CI; https://bugs.swift.org/browse/SR-389
-//            XCTAssert(matches.count == content.count && matches.count == count, "If NSString is valid path to directory then matches contain all content of directory. expected \(content) but got \(matches)")
+            //            XCTAssert(matches.count == content.count && matches.count == count, "If NSString is valid path to directory then matches contain all content of directory. expected \(content) but got \(matches)")
         } catch {
             XCTAssert(false, "Could not finish test due to error")
         }
@@ -562,7 +556,7 @@ class TestNSString : XCTestCase {
             XCTAssert(matches.count == 1 && count == 1 && stringsAreCaseInsensitivelyEqual(matches[0], path), "If NSString is valid path to file and search is case sensitive then matches contain that file path only")
         }
         
-		do {
+        do {
             let path: String = tmpPath("Test_completePathIntoString_01")
             var outName: String = ""
             var matches: [String] = []
@@ -570,7 +564,7 @@ class TestNSString : XCTestCase {
             XCTAssert(stringsAreCaseInsensitivelyEqual(outName, path), "If NSString is valid path to file and search is case insensitive then outName is string equal to self.")
             XCTAssert(matches.count == 3 && count == 3, "Matches contain all files with similar name.")
         }
-
+        
         do {
             let path = tmpPath(NSUUID().uuidString)
             var outName: String = ""
@@ -579,7 +573,7 @@ class TestNSString : XCTestCase {
             XCTAssert(outName == "", "If no matches found then outName is nil.")
             XCTAssert(matches.count == 0 && count == 0, "If no matches found then return 0 and matches is empty.")
         }
-
+        
         do {
             let path: String = ""
             var outName: String = ""
@@ -588,7 +582,7 @@ class TestNSString : XCTestCase {
             XCTAssert(outName == "", "If no matches found then outName is nil.")
             XCTAssert(matches.count == 0 && count == 0, "If no matches found then return 0 and matches is empty.")
         }
-
+        
         do {
             let path: String = tmpPath("test_c")
             var outName: String = ""
@@ -642,20 +636,20 @@ class TestNSString : XCTestCase {
         
         // Next check has no sense on Linux due to case sensitive file system.
         #if os(OSX)
-        guard ensureFiles([NSTemporaryDirectory() + "ABC/temp.txt"]) else {
-            XCTAssert(false, "Could not create temp files for testing.")
-            return
-        }
-        
-        do {
-            let path: String = tmpPath("aBc/t")
-            var outName: String = ""
-            var matches: [String] = []
-            // type by filter
-            let count = path.completePath(into: &outName, caseSensitive: true, matchesInto: &matches, filterTypes: ["txt", "dat"])
-            XCTAssert(outName == tmpPath("aBc/temp.txt"), "outName starts with receiver.")
-            XCTAssert(matches.count >= 1 && count >= 1, "There are matches")
-        }
+            guard ensureFiles([NSTemporaryDirectory() + "ABC/temp.txt"]) else {
+                XCTAssert(false, "Could not create temp files for testing.")
+                return
+            }
+            
+            do {
+                let path: String = tmpPath("aBc/t")
+                var outName: String = ""
+                var matches: [String] = []
+                // type by filter
+                let count = path.completePath(into: &outName, caseSensitive: true, matchesInto: &matches, filterTypes: ["txt", "dat"])
+                XCTAssert(outName == tmpPath("aBc/temp.txt"), "outName starts with receiver.")
+                XCTAssert(matches.count >= 1 && count >= 1, "There are matches")
+            }
         #endif
     }
     
@@ -672,7 +666,7 @@ class TestNSString : XCTestCase {
     private func stringsAreCaseInsensitivelyEqual(_ lhs: String, _ rhs: String) -> Bool {
         return lhs.compare(rhs, options: .caseInsensitive) == .orderedSame
     }
-
+    
     func test_stringByTrimmingCharactersInSet() {
         let characterSet = CharacterSet.whitespaces
         let string: NSString = " abc   "
@@ -706,19 +700,19 @@ class TestNSString : XCTestCase {
             XCTAssertEqual(string, "Default value is 1000 (42.0)")
         }
         
-#if false // these two tests expose bugs in icu4c's localization on some linux builds (disable until we can get a uniform fix for this)
-        withVaList(argument) {
-            pointer in
-            let string = NSString(format: "en_GB value is %d (%.1f)", locale: Locale.init(localeIdentifier: "en_GB"), arguments: pointer)
-            XCTAssertEqual(string, "en_GB value is 1,000 (42.0)")
-        }
-
-        withVaList(argument) {
-            pointer in
-            let string = NSString(format: "de_DE value is %d (%.1f)", locale: Locale.init(localeIdentifier: "de_DE"), arguments: pointer)
-            XCTAssertEqual(string, "de_DE value is 1.000 (42,0)")
-        }
-#endif
+        #if false // these two tests expose bugs in icu4c's localization on some linux builds (disable until we can get a uniform fix for this)
+            withVaList(argument) {
+                pointer in
+                let string = NSString(format: "en_GB value is %d (%.1f)", locale: Locale.init(localeIdentifier: "en_GB"), arguments: pointer)
+                XCTAssertEqual(string, "en_GB value is 1,000 (42.0)")
+            }
+            
+            withVaList(argument) {
+                pointer in
+                let string = NSString(format: "de_DE value is %d (%.1f)", locale: Locale.init(localeIdentifier: "de_DE"), arguments: pointer)
+                XCTAssertEqual(string, "de_DE value is 1.000 (42,0)")
+            }
+        #endif
         
         withVaList(argument) {
             pointer in
@@ -784,14 +778,14 @@ class TestNSString : XCTestCase {
             let result = path.resolvingSymlinksInPath
             
             #if os(OSX)
-            let expected = "/private"
+                let expected = "/private"
             #else
-            let expected = "/"
+                let expected = "/"
             #endif
             
             XCTAssertEqual(result, expected, "For absolute paths, all symbolic links are guaranteed to be removed.")
         }
-
+        
         do {
             let path: NSString = "tmp/.."
             let result = path.resolvingSymlinksInPath
@@ -816,7 +810,7 @@ class TestNSString : XCTestCase {
             XCTAssertEqual(result, "file:/tmp/..", "resolvingSymlinksInPath treats receiver as file path always")
         }
     }
-
+    
     func test_getCString_simple() {
         let str: NSString = "foo"
         var chars = [Int8](repeating:0xF, count:4)
@@ -884,7 +878,7 @@ class TestNSString : XCTestCase {
             let userName = NSUUID().uuidString
             let path = NSString(string: "~\(userName)/")
             let result = path.expandingTildeInPath
-          	// next assert fails in VirtualBox because home directory for unknown user resolved to /var/run/vboxadd
+            // next assert fails in VirtualBox because home directory for unknown user resolved to /var/run/vboxadd
             XCTAssert(result == "~\(userName)", "Return copy of reciver if home directory could no be resolved.")
         }
     }
@@ -922,11 +916,11 @@ class TestNSString : XCTestCase {
         
         // tmp is symlinked on OS X only
         #if os(OSX)
-        do {
-            let path: NSString = "/tmp/.."
-            let result = path.standardizingPath
-            XCTAssertEqual(result, "/private")
-        }
+            do {
+                let path: NSString = "/tmp/.."
+                let result = path.standardizingPath
+                XCTAssertEqual(result, "/private")
+            }
         #endif
         
         do {
@@ -941,7 +935,7 @@ class TestNSString : XCTestCase {
             XCTAssertEqual(NSString(string: result), path, "parent links could not be resolved for relative paths")
         }
     }
-
+    
     func test_addingPercentEncoding() {
         let s1 = "a b".addingPercentEncoding(withAllowedCharacters: .alphanumerics)
         XCTAssertEqual(s1, "a%20b")
@@ -1010,7 +1004,7 @@ class TestNSString : XCTestCase {
             NSString(string: "/scratch") : "/scratch.tiff",
             NSString(string: "/~scratch") : "/~scratch.tiff",
             NSString(string: "scratch") : "scratch.tiff",
-        ]
+            ]
         for (fileName, expectedResult) in values {
             let result = fileName.appendingPathExtension("tiff")
             XCTAssertEqual(result, expectedResult, "expected \(expectedResult) for \(fileName) but got \(result as Optional)")
@@ -1025,7 +1019,7 @@ class TestNSString : XCTestCase {
             NSString(string: "scratch..tiff") : "scratch.",
             NSString(string: ".tiff") : ".tiff",
             NSString(string: "/") : "/",
-        ]
+            ]
         for (fileName, expectedResult) in values {
             let result = fileName.deletingPathExtension
             XCTAssertEqual(result, expectedResult, "expected \(expectedResult) for \(fileName) but got \(result)")
@@ -1073,26 +1067,26 @@ class TestNSString : XCTestCase {
         let mutableString = NSMutableString(string: "Test")
         XCTAssertEqual(mutableString, "Test")
     }
-
+    
     func test_getLineStart() {
         // offset        012345 678901
         let twoLines =  "line1\nline2\n"
         var outStartIndex = twoLines.startIndex
         var outEndIndex = twoLines.startIndex
         var outContentsEndIndex = twoLines.startIndex
-
+        
         twoLines.getLineStart(&outStartIndex, end: &outEndIndex,
                               contentsEnd: &outContentsEndIndex,
                               for: outEndIndex..<outEndIndex)
-
+        
         XCTAssertEqual(outStartIndex, twoLines.startIndex)
         XCTAssertEqual(outContentsEndIndex, twoLines.index(twoLines.startIndex, offsetBy: 5))
         XCTAssertEqual(outEndIndex, twoLines.index(twoLines.startIndex, offsetBy: 6))
-
+        
         twoLines.getLineStart(&outStartIndex, end: &outEndIndex,
                               contentsEnd: &outContentsEndIndex,
                               for: outEndIndex..<outEndIndex)
-
+        
         XCTAssertEqual(outStartIndex, twoLines.index(twoLines.startIndex, offsetBy: 6))
         XCTAssertEqual(outContentsEndIndex, twoLines.index(twoLines.startIndex, offsetBy: 11))
         XCTAssertEqual(outEndIndex, twoLines.index(twoLines.startIndex, offsetBy: 12))
@@ -1103,43 +1097,16 @@ class TestNSString : XCTestCase {
         XCTAssertTrue(testString.hasPrefix(""))
         XCTAssertTrue(testString.hasSuffix(""))
     }
-
+    
     func test_substringWithRange() {
         let trivial = NSString(string: "swift.org")
         XCTAssertEqual(trivial.substring(with: NSMakeRange(0, 5)), "swift")
-
-        let surrogatePairSuffix = NSString(string: "Hurray🎉")
-        XCTAssertEqual(surrogatePairSuffix.substring(with: NSMakeRange(0, 7)), "Hurray�")
-
-        let surrogatePairPrefix = NSString(string: "🐱Cat")
-        XCTAssertEqual(surrogatePairPrefix.substring(with: NSMakeRange(1, 4)), "�Cat")
-
-        let singleChar = NSString(string: "😹")
-        XCTAssertEqual(singleChar.substring(with: NSMakeRange(0,1)), "�")
-
+        
         let crlf = NSString(string: "\r\n")
         XCTAssertEqual(crlf.substring(with: NSMakeRange(0,1)), "\r")
         XCTAssertEqual(crlf.substring(with: NSMakeRange(1,1)), "\n")
         XCTAssertEqual(crlf.substring(with: NSMakeRange(1,0)), "")
-
-        let bothEnds1 = NSString(string: "😺😺")
-        XCTAssertEqual(bothEnds1.substring(with: NSMakeRange(1,2)), "��") 
-
-        let s1 = NSString(string: "😺\r\n")
-        XCTAssertEqual(s1.substring(with: NSMakeRange(1,2)), "�\r")
-
-        let s2 = NSString(string: "\r\n😺")
-        XCTAssertEqual(s2.substring(with: NSMakeRange(1,2)), "\n�")
-
-        let s3 = NSString(string: "😺cats😺")
-        XCTAssertEqual(s3.substring(with: NSMakeRange(1,6)), "�cats�")
-
-        let s4 = NSString(string: "😺cats\r\n")
-        XCTAssertEqual(s4.substring(with: NSMakeRange(1,6)), "�cats\r")
-
-        let s5 = NSString(string: "\r\ncats😺")
-        XCTAssertEqual(s5.substring(with: NSMakeRange(1,6)), "\ncats�")
-
+        
         // SR-3363
         let s6 = NSString(string: "Beyonce\u{301} and Tay")
         XCTAssertEqual(s6.substring(with: NSMakeRange(7, 9)), "\u{301} and Tay")
@@ -1151,15 +1118,15 @@ struct ComparisonTest {
     let rhs: String
     let loc: UInt
     let reason: String
-
+    
     var xfail: Bool {
-      return !reason.isEmpty
+        return !reason.isEmpty
     }
-
+    
     init(
         _ lhs: String, _ rhs: String,
-          reason: String = "", line: UInt = #line
-    ) {
+        reason: String = "", line: UInt = #line
+        ) {
         self.lhs = lhs
         self.rhs = rhs
         self.reason = reason
@@ -1170,26 +1137,25 @@ struct ComparisonTest {
 let comparisonTests = [
     ComparisonTest("", ""),
     ComparisonTest("", "a"),
-
+    
     // ASCII cases
     ComparisonTest("t", "tt"),
     ComparisonTest("t", "Tt"),
     ComparisonTest("\u{0}", "",
-        reason: {
-#if _runtime(_ObjC)
-    return ""
-#else
-    return "https://bugs.swift.org/browse/SR-332"
-#endif
+                   reason: {
+                    #if _runtime(_ObjC)
+                        return ""
+                    #else
+                        return "https://bugs.swift.org/browse/SR-332"
+                    #endif
     }()),
     ComparisonTest("\u{0}", "\u{0}",
-        reason: "https://bugs.swift.org/browse/SR-332"),
+                   reason: "https://bugs.swift.org/browse/SR-332"),
     ComparisonTest("\r\n", "t"),
     ComparisonTest("\r\n", "\n",
-        reason: "blocked on rdar://problem/19036555"),
-    ComparisonTest("\u{0}", "\u{0}\u{0}",
-        reason: "rdar://problem/19034601"),
-
+                   reason: "blocked on rdar://problem/19036555"),
+    ComparisonTest("\u{0}", "\u{0}\u{0}"),
+    
     // Whitespace
     // U+000A LINE FEED (LF)
     // U+000B LINE TABULATION
@@ -1203,13 +1169,13 @@ let comparisonTests = [
     ComparisonTest("\u{2028}", "\n"),
     ComparisonTest("\u{2029}", "\n"),
     ComparisonTest("\r\n\r\n", "\r\n"),
-
+    
     // U+0301 COMBINING ACUTE ACCENT
     // U+00E1 LATIN SMALL LETTER A WITH ACUTE
     ComparisonTest("a\u{301}", "\u{e1}"),
     ComparisonTest("a", "a\u{301}"),
     ComparisonTest("a", "\u{e1}"),
-
+    
     // U+304B HIRAGANA LETTER KA
     // U+304C HIRAGANA LETTER GA
     // U+3099 COMBINING KATAKANA-HIRAGANA VOICED SOUND MARK
@@ -1219,7 +1185,7 @@ let comparisonTests = [
     ComparisonTest("\u{304b}", "\u{304c}\u{3099}"),
     ComparisonTest("\u{304c}", "\u{304b}\u{3099}"),
     ComparisonTest("\u{304c}", "\u{304c}\u{3099}"),
-
+    
     // U+212B ANGSTROM SIGN
     // U+030A COMBINING RING ABOVE
     // U+00C5 LATIN CAPITAL LETTER A WITH RING ABOVE
@@ -1228,11 +1194,11 @@ let comparisonTests = [
     ComparisonTest("A\u{30a}", "\u{c5}"),
     ComparisonTest("A\u{30a}", "a"),
     ComparisonTest("A", "A\u{30a}"),
-
+    
     // U+2126 OHM SIGN
     // U+03A9 GREEK CAPITAL LETTER OMEGA
     ComparisonTest("\u{2126}", "\u{03a9}"),
-
+    
     // U+0323 COMBINING DOT BELOW
     // U+0307 COMBINING DOT ABOVE
     // U+1E63 LATIN SMALL LETTER S WITH DOT BELOW
@@ -1244,16 +1210,16 @@ let comparisonTests = [
     ComparisonTest("\u{1e63}\u{307}", "s\u{323}\u{307}"),
     ComparisonTest("\u{1e63}\u{307}", "s\u{307}\u{323}"),
     ComparisonTest("s\u{323}", "\u{1e69}"),
-
+    
     // U+FB01 LATIN SMALL LIGATURE FI
     ComparisonTest("\u{fb01}", "\u{fb01}"),
     ComparisonTest("fi", "\u{fb01}"),
-
+    
     // U+1F1E7 REGIONAL INDICATOR SYMBOL LETTER B
     // \u{1F1E7}\u{1F1E7} Flag of Barbados
     ComparisonTest("\u{1F1E7}", "\u{1F1E7}\u{1F1E7}",
-        reason: "https://bugs.swift.org/browse/SR-367"),
-
+                   reason: "https://bugs.swift.org/browse/SR-367"),
+    
     // Test that Unicode collation is performed in deterministic mode.
     //
     // U+0301 COMBINING ACUTE ACCENT
@@ -1268,7 +1234,7 @@ let comparisonTests = [
     // U+0301 and U+0954 don't decompose in the canonical decomposition mapping.
     // U+0341 has a canonical decomposition mapping of U+0301.
     ComparisonTest("\u{0301}", "\u{0341}",
-        reason: "https://bugs.swift.org/browse/SR-243"),
+                   reason: "https://bugs.swift.org/browse/SR-243"),
     ComparisonTest("\u{0301}", "\u{0954}"),
     ComparisonTest("\u{0341}", "\u{0954}"),
 ]
@@ -1290,11 +1256,11 @@ func checkHasPrefixHasSuffix(_ lhs: String, _ rhs: String, _ stack: [UInt]) -> I
         return failures
     } else if rhs == "" {
         var failures = 0
-        failures += lhs.hasPrefix(rhs) ? 0 : 1 
-        failures += lhs.hasSuffix(rhs) ? 0 : 1 
+        failures += lhs.hasPrefix(rhs) ? 0 : 1
+        failures += lhs.hasSuffix(rhs) ? 0 : 1
         return failures
     }
-
+    
     // To determine the expected results, compare grapheme clusters,
     // scalar-to-scalar, of the NFD form of the strings.
     let lhsNFDGraphemeClusters =
@@ -1310,7 +1276,7 @@ func checkHasPrefixHasSuffix(_ lhs: String, _ rhs: String, _ stack: [UInt]) -> I
     let expectHasSuffix =
         lhsNFDGraphemeClusters.lazy.reversed().starts(
             with: rhsNFDGraphemeClusters.lazy.reversed(), by: (==))
-
+    
     func testFailure(_ lhs: Bool, _ rhs: Bool, _ stack: [UInt]) -> Int {
         guard lhs == rhs else {
             // print(stack)
@@ -1318,7 +1284,7 @@ func checkHasPrefixHasSuffix(_ lhs: String, _ rhs: String, _ stack: [UInt]) -> I
         }
         return 0
     }
-
+    
     var failures = 0
     failures += testFailure(expectHasPrefix, lhs.hasPrefix(rhs), stack + [#line])
     failures += testFailure(expectHasSuffix, lhs.hasSuffix(rhs), stack + [#line])
@@ -1331,15 +1297,15 @@ extension TestNSString {
             var failures = 0
             failures += checkHasPrefixHasSuffix(test.lhs, test.rhs, [test.loc, #line])
             failures += checkHasPrefixHasSuffix(test.rhs, test.lhs, [test.loc, #line])
-
+            
             let fragment = "abc"
             let combiner = "\u{0301}"
-
+            
             failures += checkHasPrefixHasSuffix(test.lhs + fragment, test.rhs, [test.loc, #line])
             failures += checkHasPrefixHasSuffix(fragment + test.lhs, test.rhs, [test.loc, #line])
             failures += checkHasPrefixHasSuffix(test.lhs + combiner, test.rhs, [test.loc, #line])
             failures += checkHasPrefixHasSuffix(combiner + test.lhs, test.rhs, [test.loc, #line])
-
+            
             let fail = (failures > 0)
             if fail {
                 // print("Prefix/Suffix case \(test.loc): \(failures) failures")
@@ -1359,35 +1325,36 @@ extension TestNSString {
         let testSuffix = "cd"
         let testEmoji = "\u{1F468}\u{200D}\u{1F469}\u{200D}\u{1F467}\u{200D}\u{1F466}"
         let testString = testPrefix + testEmoji + testSuffix
-
+        
         let testReplacement = "xyz"
         let testReplacementEmoji = "\u{01F468}\u{200D}\u{002764}\u{00FE0F}\u{200D}\u{01F48B}\u{200D}\u{01F468}"
-
+        
         let noChange = testString.replacingOccurrences(of: testReplacement, with: "")
         XCTAssertEqual(noChange, testString)
-
+        
         let removePrefix = testString.replacingOccurrences(of: testPrefix, with: "")
         XCTAssertEqual(removePrefix, testEmoji + testSuffix)
         let replacePrefix = testString.replacingOccurrences(of: testPrefix, with: testReplacement)
         XCTAssertEqual(replacePrefix, testReplacement + testEmoji + testSuffix)
-
+        
         let removeSuffix = testString.replacingOccurrences(of: testSuffix, with: "")
         XCTAssertEqual(removeSuffix, testPrefix + testEmoji)
         let replaceSuffix = testString.replacingOccurrences(of: testSuffix, with: testReplacement)
         XCTAssertEqual(replaceSuffix, testPrefix + testEmoji + testReplacement)
-
+        
         let removeMultibyte = testString.replacingOccurrences(of: testEmoji, with: "")
         XCTAssertEqual(removeMultibyte, testPrefix + testSuffix)
         let replaceMultibyte = testString.replacingOccurrences(of: testEmoji, with: testReplacement)
         XCTAssertEqual(replaceMultibyte, testPrefix + testReplacement + testSuffix)
-
+        
         let replaceMultibyteWithMultibyte = testString.replacingOccurrences(of: testEmoji, with: testReplacementEmoji)
         XCTAssertEqual(replaceMultibyteWithMultibyte, testPrefix + testReplacementEmoji + testSuffix)
-
+        
         let replacePrefixWithMultibyte = testString.replacingOccurrences(of: testPrefix, with: testReplacementEmoji)
         XCTAssertEqual(replacePrefixWithMultibyte, testReplacementEmoji + testEmoji + testSuffix)
-
+        
         let replaceSuffixWithMultibyte = testString.replacingOccurrences(of: testSuffix, with: testReplacementEmoji)
         XCTAssertEqual(replaceSuffixWithMultibyte, testPrefix + testEmoji + testReplacementEmoji)
     }
 }
+
