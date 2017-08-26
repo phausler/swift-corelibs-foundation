@@ -27,8 +27,15 @@ internal class NSThreadSpecific<T: NSObject> {
             return value
         }
     }
+    
+    internal func get() -> T? {
+        guard let specific = _CFThreadSpecificGet(key) else {
+            return nil
+        }
+        return unsafeBitCast(specific, to: T.self)
+    }
 
-    internal func set(_ value: T) {
+    internal func set(_ value: T?) {
         _CThreadSpecificSet(key, value)
     }
 }

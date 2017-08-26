@@ -359,7 +359,7 @@ open class HTTPCookie : NSObject {
             return sum + "\(next._name)=\(next._value); "
         }
         //Remove the final trailing semicolon and whitespace
-        if ( cookieString.length > 0 ) {
+        if ( cookieString.count > 0 ) {
             cookieString.removeLast()
             cookieString.removeLast()
         }

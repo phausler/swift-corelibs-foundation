@@ -74,11 +74,10 @@
 		5B1FD9DD1D6D16580080E83C /* URLSessionTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B1FD9D11D6D16580080E83C /* URLSessionTask.swift */; };
 		5B1FD9DE1D6D16580080E83C /* TaskRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B1FD9D21D6D16580080E83C /* TaskRegistry.swift */; };
 		5B1FD9E11D6D178E0080E83C /* libcurl.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B1FD9E01D6D178E0080E83C /* libcurl.3.dylib */; };
-		5B1FD9E31D6D17B80080E83C /* TestNSURLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B1FD9E21D6D17B80080E83C /* TestNSURLSession.swift */; };
+		5B1FD9E31D6D17B80080E83C /* TestURLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B1FD9E21D6D17B80080E83C /* TestURLSession.swift */; };
 		5B21B1A21EFF070A0096C47E /* NSStringBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B21B1A11EFF070A0096C47E /* NSStringBridge.swift */; };
 		5B21B1A41EFF08580096C47E /* CFStringExtra.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B21B1A31EFF08580096C47E /* CFStringExtra.swift */; };
 		5B21B1A61EFF25EF0096C47E /* NSStringPrivate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B21B1A51EFF25EF0096C47E /* NSStringPrivate.swift */; };
-		5B1FD9E31D6D17B80080E83C /* TestURLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B1FD9E21D6D17B80080E83C /* TestURLSession.swift */; };
 		5B23AB871CE62D17000DB898 /* Boxing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B23AB861CE62D17000DB898 /* Boxing.swift */; };
 		5B23AB891CE62D4D000DB898 /* ReferenceConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B23AB881CE62D4D000DB898 /* ReferenceConvertible.swift */; };
 		5B23AB8B1CE62F9B000DB898 /* PersonNameComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B23AB8A1CE62F9B000DB898 /* PersonNameComponents.swift */; };
@@ -87,6 +86,11 @@
 		5B2B59821C24D00500271109 /* CFStream.c in Sources */ = {isa = PBXBuildFile; fileRef = 5B5D89031BBC9BC300234F36 /* CFStream.c */; };
 		5B2B59831C24D00C00271109 /* CFSocketStream.c in Sources */ = {isa = PBXBuildFile; fileRef = 5B5D89871BBDB1B400234F36 /* CFSocketStream.c */; };
 		5B2B59841C24D01100271109 /* CFConcreteStreams.c in Sources */ = {isa = PBXBuildFile; fileRef = 5B5D89831BBDB13800234F36 /* CFConcreteStreams.c */; };
+		5B3DD7931F50C537005A158A /* URLCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE0B7F1BD15DFF00C49C64 /* URLCredential.swift */; };
+		5B3DD7941F50C54E005A158A /* XMLElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE0B8C1BD15DFF00C49C64 /* XMLElement.swift */; };
+		5B3DD7951F50C55D005A158A /* XMLDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE0B891BD15DFF00C49C64 /* XMLDocument.swift */; };
+		5B3DD7961F50C668005A158A /* JSONSerialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE0B641BD15DFF00C49C64 /* JSONSerialization.swift */; };
+		5B3DD7971F50C6DB005A158A /* AffineTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE0B4D1BD09E0800C49C64 /* AffineTransform.swift */; };
 		5B4092101D1B304C0022B067 /* StringEncodings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B40920F1D1B304C0022B067 /* StringEncodings.swift */; };
 		5B4092121D1B30B40022B067 /* ExtraStringAPIs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B4092111D1B30B40022B067 /* ExtraStringAPIs.swift */; };
 		5B40F9EF1C124F47000E72E3 /* CFXMLInterface.c in Sources */ = {isa = PBXBuildFile; fileRef = 5B40F9EB1C124F45000E72E3 /* CFXMLInterface.c */; };
@@ -378,7 +382,6 @@
 		EA66F6761BF56CDE00136161 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA66F6691BF55D4B00136161 /* main.swift */; };
 		EA66F6771BF56D4C00136161 /* SwiftFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B5D885D1BBC938800234F36 /* SwiftFoundation.framework */; };
 		EAB57B721BD1C7A5004AC5C5 /* PortMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAB57B711BD1C7A5004AC5C5 /* PortMessage.swift */; };
-		EADE0B4E1BD09E0800C49C64 /* AffineTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE0B4D1BD09E0800C49C64 /* AffineTransform.swift */; };
 		EADE0B501BD09E3100C49C64 /* NSAttributedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE0B4F1BD09E3100C49C64 /* NSAttributedString.swift */; };
 		EADE0B521BD09F2F00C49C64 /* ByteCountFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE0B511BD09F2F00C49C64 /* ByteCountFormatter.swift */; };
 		EADE0B921BD15DFF00C49C64 /* NSCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE0B541BD15DFF00C49C64 /* NSCache.swift */; };
@@ -397,7 +400,6 @@
 		EADE0B9F1BD15DFF00C49C64 /* HTTPCookieStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE0B611BD15DFF00C49C64 /* HTTPCookieStorage.swift */; };
 		EADE0BA01BD15DFF00C49C64 /* NSIndexPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE0B621BD15DFF00C49C64 /* NSIndexPath.swift */; };
 		EADE0BA11BD15DFF00C49C64 /* NSIndexSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE0B631BD15DFF00C49C64 /* NSIndexSet.swift */; };
-		EADE0BA21BD15E0000C49C64 /* JSONSerialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE0B641BD15DFF00C49C64 /* JSONSerialization.swift */; };
 		EADE0BA31BD15E0000C49C64 /* NSKeyedArchiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE0B651BD15DFF00C49C64 /* NSKeyedArchiver.swift */; };
 		EADE0BA41BD15E0000C49C64 /* LengthFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE0B661BD15DFF00C49C64 /* LengthFormatter.swift */; };
 		EADE0BA61BD15E0000C49C64 /* MassFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE0B681BD15DFF00C49C64 /* MassFormatter.swift */; };
@@ -420,7 +422,6 @@
 		EADE0BB91BD15E0000C49C64 /* NSTextCheckingResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE0B7B1BD15DFF00C49C64 /* NSTextCheckingResult.swift */; };
 		EADE0BBB1BD15E0000C49C64 /* URLAuthenticationChallenge.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE0B7D1BD15DFF00C49C64 /* URLAuthenticationChallenge.swift */; };
 		EADE0BBC1BD15E0000C49C64 /* URLCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE0B7E1BD15DFF00C49C64 /* URLCache.swift */; };
-		EADE0BBD1BD15E0000C49C64 /* URLCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE0B7F1BD15DFF00C49C64 /* URLCredential.swift */; };
 		EADE0BBE1BD15E0000C49C64 /* URLCredentialStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE0B801BD15DFF00C49C64 /* URLCredentialStorage.swift */; };
 		EADE0BBF1BD15E0000C49C64 /* NSURLError.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE0B811BD15DFF00C49C64 /* NSURLError.swift */; };
 		EADE0BC01BD15E0000C49C64 /* URLProtectionSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE0B821BD15DFF00C49C64 /* URLProtectionSpace.swift */; };
@@ -428,10 +429,8 @@
 		EADE0BC21BD15E0000C49C64 /* NSURLRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE0B841BD15DFF00C49C64 /* NSURLRequest.swift */; };
 		EADE0BC31BD15E0000C49C64 /* URLResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE0B851BD15DFF00C49C64 /* URLResponse.swift */; };
 		EADE0BC51BD15E0000C49C64 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE0B871BD15DFF00C49C64 /* UserDefaults.swift */; };
-		EADE0BC71BD15E0000C49C64 /* XMLDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE0B891BD15DFF00C49C64 /* XMLDocument.swift */; };
 		EADE0BC81BD15E0000C49C64 /* XMLDTD.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE0B8A1BD15DFF00C49C64 /* XMLDTD.swift */; };
 		EADE0BC91BD15E0000C49C64 /* XMLDTDNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE0B8B1BD15DFF00C49C64 /* XMLDTDNode.swift */; };
-		EADE0BCA1BD15E0000C49C64 /* XMLElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE0B8C1BD15DFF00C49C64 /* XMLElement.swift */; };
 		EADE0BCB1BD15E0000C49C64 /* XMLNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE0B8D1BD15DFF00C49C64 /* XMLNode.swift */; };
 		EADE0BCD1BD15E0000C49C64 /* XMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE0B8F1BD15DFF00C49C64 /* XMLParser.swift */; };
 		F03A43181D4877DD00A7791E /* CFAsmMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = F03A43161D48778200A7791E /* CFAsmMacros.h */; settings = {ATTRIBUTES = (Private, ); }; };
@@ -518,11 +517,10 @@
 		5B1FD9D11D6D16580080E83C /* URLSessionTask.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLSessionTask.swift; sourceTree = "<group>"; };
 		5B1FD9D21D6D16580080E83C /* TaskRegistry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskRegistry.swift; sourceTree = "<group>"; };
 		5B1FD9E01D6D178E0080E83C /* libcurl.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcurl.3.dylib; path = usr/lib/libcurl.3.dylib; sourceTree = SDKROOT; };
-		5B1FD9E21D6D17B80080E83C /* TestNSURLSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestNSURLSession.swift; sourceTree = "<group>"; };
+		5B1FD9E21D6D17B80080E83C /* TestURLSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestURLSession.swift; sourceTree = "<group>"; };
 		5B21B1A11EFF070A0096C47E /* NSStringBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSStringBridge.swift; sourceTree = "<group>"; };
 		5B21B1A31EFF08580096C47E /* CFStringExtra.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CFStringExtra.swift; sourceTree = "<group>"; };
 		5B21B1A51EFF25EF0096C47E /* NSStringPrivate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSStringPrivate.swift; sourceTree = "<group>"; };
-		5B1FD9E21D6D17B80080E83C /* TestURLSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestURLSession.swift; sourceTree = "<group>"; };
 		5B23AB861CE62D17000DB898 /* Boxing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Boxing.swift; sourceTree = "<group>"; };
 		5B23AB881CE62D4D000DB898 /* ReferenceConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReferenceConvertible.swift; sourceTree = "<group>"; };
 		5B23AB8A1CE62F9B000DB898 /* PersonNameComponents.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersonNameComponents.swift; sourceTree = "<group>"; };
@@ -1723,8 +1721,6 @@
 				5B21B1A51EFF25EF0096C47E /* NSStringPrivate.swift */,
 				5B21B1A11EFF070A0096C47E /* NSStringBridge.swift */,
 				5B21B1A31EFF08580096C47E /* CFStringExtra.swift */,
-				5B40920F1D1B304C0022B067 /* NSStringEncodings.swift */,
-				5BDC3F451BCC5DCB00ED97BB /* NSString.swift */,
 				5B40920F1D1B304C0022B067 /* StringEncodings.swift */,
 				5BDC3FCB1BCF177E00ED97BB /* NSCFString.swift */,
 				5B94E8811C430DE70055C035 /* NSStringAPI.swift */,
@@ -2138,6 +2134,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5B3DD7971F50C6DB005A158A /* AffineTransform.swift in Sources */,
+				5B3DD7961F50C668005A158A /* JSONSerialization.swift in Sources */,
+				5B3DD7951F50C55D005A158A /* XMLDocument.swift in Sources */,
+				5B3DD7941F50C54E005A158A /* XMLElement.swift in Sources */,
+				5B3DD7931F50C537005A158A /* URLCredential.swift in Sources */,
 				5B21B1A41EFF08580096C47E /* CFStringExtra.swift in Sources */,
 				63DCE9D21EAA430100E9CB02 /* ISO8601DateFormatter.swift in Sources */,
 				5BF7AE831BCD50CD008F214A /* NSArray.swift in Sources */,
@@ -2169,13 +2170,6 @@
 				EA0812691DA71C8A00651B70 /* ProgressFraction.swift in Sources */,
 				5BF7AEBE1BCD51F9008F214A /* NSTimeZone.swift in Sources */,
 				EADE0B951BD15DFF00C49C64 /* DateComponentsFormatter.swift in Sources */,
-				EADE0BBD1BD15E0000C49C64 /* NSURLCredential.swift in Sources */,
-				EADE0BCA1BD15E0000C49C64 /* NSXMLElement.swift in Sources */,
-				EADE0BA21BD15E0000C49C64 /* NSJSONSerialization.swift in Sources */,
-				EADE0BBD1BD15E0000C49C64 /* URLCredential.swift in Sources */,
-				EADE0BCA1BD15E0000C49C64 /* XMLElement.swift in Sources */,
-				EADE0BA21BD15E0000C49C64 /* JSONSerialization.swift in Sources */,
-				5BF7AEBA1BCD51F9008F214A /* NSString.swift in Sources */,
 				5BF7AEB81BCD51F9008F214A /* NSRange.swift in Sources */,
 				EADE0B501BD09E3100C49C64 /* NSAttributedString.swift in Sources */,
 				5BF7AEBB1BCD51F9008F214A /* NSSwiftRuntime.swift in Sources */,
@@ -2250,11 +2244,7 @@
 				B9974B981EDF4A22007F15B8 /* libcurlHelpers.swift in Sources */,
 				5BECBA381D1CAD7000B39B1F /* Measurement.swift in Sources */,
 				5BF7AEAF1BCD51F9008F214A /* Host.swift in Sources */,
-				EADE0B4E1BD09E0800C49C64 /* NSAffineTransform.swift in Sources */,
-				EADE0BC71BD15E0000C49C64 /* NSXMLDocument.swift in Sources */,
 				5B523FB71F00B57900D93A2A /* NSSwiftString.swift in Sources */,
-				EADE0B4E1BD09E0800C49C64 /* AffineTransform.swift in Sources */,
-				EADE0BC71BD15E0000C49C64 /* XMLDocument.swift in Sources */,
 				5BDC3FCE1BCF17D300ED97BB /* NSCFDictionary.swift in Sources */,
 				5B1FD9DA1D6D16580080E83C /* URLSession.swift in Sources */,
 				EADE0BA81BD15E0000C49C64 /* NotificationQueue.swift in Sources */,

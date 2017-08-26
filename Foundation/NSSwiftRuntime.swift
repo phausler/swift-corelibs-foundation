@@ -63,6 +63,13 @@ internal func _CFSwiftCopyWithZone(_ cf: CFTypeRef, _ zone: CFTypeRef?) -> Unman
     return Unmanaged<CFTypeRef>.passRetained((cf as! NSObject).copy() as! NSObject)
 }
 
+internal func _CFSwiftCopyDescription(_ cf: CFTypeRef) -> Unmanaged<CFString> {
+    return Unmanaged<CFString>.passRetained((cf as! NSObject).description._cfObject)
+}
+
+internal func _CFSwiftCopyFormattingDescription(_ cf: CFTypeRef, _ options: CFDictionary?) -> Unmanaged<CFString> {
+    return Unmanaged<CFString>.passRetained((cf as! NSObject).description._cfObject)
+}
 
 internal func _CFSwiftGetHash(_ cf: AnyObject) -> CFHashCode {
     return CFHashCode(bitPattern: (cf as! NSObject).hash)
@@ -115,6 +122,8 @@ internal func __CFInitializeSwift() {
     __CFSwiftBridge.NSObject.hash = _CFSwiftGetHash
     __CFSwiftBridge.NSObject._cfTypeID = _CFSwiftGetTypeID
     __CFSwiftBridge.NSObject.copyWithZone = _CFSwiftCopyWithZone
+    __CFSwiftBridge.NSObject._copyDescription = _CFSwiftCopyDescription
+    __CFSwiftBridge.NSObject._copyFormattingDescription = _CFSwiftCopyFormattingDescription
     
     __CFSwiftBridge.NSSet.count = _CFSwiftSetGetCount
     __CFSwiftBridge.NSSet.countForKey = _CFSwiftSetGetCountOfValue

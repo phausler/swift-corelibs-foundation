@@ -51,6 +51,8 @@ CF_EXPORT void _CFDeinit(CFTypeRef cf);
 struct _NSObjectBridge {
     CFTypeID (*_cfTypeID)(CFTypeRef object);
     CFHashCode (*hash)(CFTypeRef object);
+    _Nonnull CFStringRef (*_Nonnull _copyDescription)(_Nonnull CFTypeRef object);
+    _Nonnull CFStringRef (*_Nonnull _copyFormattingDescription)(_Nonnull CFTypeRef object, _Nullable CFDictionaryRef formattingOptions);
     bool (*isEqual)(CFTypeRef object, CFTypeRef other);
     _Nonnull CFTypeRef (*_Nonnull copyWithZone)(_Nonnull CFTypeRef object, _Nullable CFTypeRef zone);
 };

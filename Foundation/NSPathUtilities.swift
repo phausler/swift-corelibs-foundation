@@ -36,7 +36,7 @@ public func NSTemporaryDirectory() -> String {
 internal extension String {
     
     internal var _startOfLastPathComponent : String.Index {
-        precondition(!hasSuffix("/") && length > 1)
+        precondition(!hasSuffix("/") && count > 1)
         
         let startPos = startIndex
         var curPos = endIndex
@@ -119,7 +119,7 @@ internal extension String {
                 }
             }
         }
-        if stripTrailing && result.length > 1 && result.hasSuffix("/") {
+        if stripTrailing && result.count > 1 && result.hasSuffix("/") {
             result.remove(at: result.index(before: result.endIndex))
         }
         return result
