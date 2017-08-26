@@ -471,6 +471,36 @@ open class NSString : NSObject, NSCopying, NSMutableCopying, NSSecureCoding {
         }
     }
     
+    static fileprivate func detectEncoding(_ bytePtr: UnsafePointer<UInt8>, length len: Int, usedEncoding enc: UnsafeMutablePointer<UInt>?, advance: inout Int) -> String.Encoding {
+        var advance = 0
+        if len >= 4 && bytePtr[0] == 0xFF && bytePtr[1] == 0xFE && bytePtr[2] == 0x00 && bytePtr[3] == 0x00 {
+            enc?.pointee = String.Encoding.utf32LittleEndian.rawValue
+            advance = 4
+            return .utf32LittleEndian
+        }
+        else if len >= 2 && bytePtr[0] == 0xFE && bytePtr[1] == 0xFF {
+            enc?.pointee = String.Encoding.utf16BigEndian.rawValue
+            advance = 2
+            return .utf16BigEndian
+        }
+        else if len >= 2 && bytePtr[0] == 0xFF && bytePtr[1] == 0xFE {
+            enc?.pointee = String.Encoding.utf16LittleEndian.rawValue
+            advance = 2
+            return .utf16LittleEndian
+        }
+        else if len >= 4 && bytePtr[0] == 0x00 && bytePtr[1] == 0x00 && bytePtr[2] == 0xFE && bytePtr[3] == 0xFF {
+            enc?.pointee = String.Encoding.utf32BigEndian.rawValue
+            advance = 4
+            return .utf32BigEndian
+        }
+        else {
+            //Need to work on more conditions. This should be the default
+            enc?.pointee = String.Encoding.utf8.rawValue
+            advance = 0
+            return .utf8
+        }
+    }
+    
     /* These try to determine the encoding, and return the encoding which was used.  Note that these methods might get "smarter" in subsequent releases of the system, and use additional techniques for recognizing encodings. If nil is returned, the optional error return indicates problem that was encountered (for instance, file system or encoding errors).
      */
     public convenience init(contentsOf url: URL, usedEncoding enc: UnsafeMutablePointer<UInt>?) throws {
@@ -483,13 +513,7 @@ open class NSString : NSObject, NSCopying, NSMutableCopying, NSSecureCoding {
             var detectedEncoding: UInt = String.Encoding.utf8.rawValue
             var advance = 0
             let cf = readResult.withUnsafeBytes { (bytePtr: UnsafePointer<UInt8>) -> CFString in
-                if len >= 2  && bytePtr[0] == 254 && bytePtr[1] == 255 {
-                    detectedEncoding = String.Encoding.utf16BigEndian.rawValue
-                    advance = 2
-                } else if len >= 2 && bytePtr[0] == 255 && bytePtr[1] == 254 {
-                    detectedEncoding = String.Encoding.utf16LittleEndian.rawValue
-                    advance = 2
-                }
+                detectedEncoding = NSString.detectEncoding(bytePtr, length: len, usedEncoding: enc, advance: &advance).rawValue
                 return CFStringCreateWithBytes(kCFAllocatorDefault, bytePtr.advanced(by: advance), len - advance, CFStringConvertNSStringEncodingToEncoding(detectedEncoding), true)
             }
             enc?.pointee = detectedEncoding
@@ -507,13 +531,7 @@ open class NSString : NSObject, NSCopying, NSMutableCopying, NSSecureCoding {
         var detectedEncoding: UInt = String.Encoding.utf8.rawValue
         var advance = 0
         let cf = readResult.withUnsafeBytes { (bytePtr: UnsafePointer<UInt8>) -> CFString in
-            if len >= 2  && bytePtr[0] == 254 && bytePtr[1] == 255 {
-                detectedEncoding = String.Encoding.utf16BigEndian.rawValue
-                advance = 2
-            } else if len >= 2 && bytePtr[0] == 255 && bytePtr[1] == 254 {
-                detectedEncoding = String.Encoding.utf16LittleEndian.rawValue
-                advance = 2
-            }
+            detectedEncoding = NSString.detectEncoding(bytePtr, length: len, usedEncoding: enc, advance: &advance).rawValue
             return CFStringCreateWithBytes(kCFAllocatorDefault, bytePtr.advanced(by: advance), len - advance, CFStringConvertNSStringEncodingToEncoding(detectedEncoding), true)
         }
         enc?.pointee = detectedEncoding
