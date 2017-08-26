@@ -88,9 +88,8 @@ open class XMLElement: XMLNode {
         guard let name = _CFXMLNodeCopyName(attribute._xmlNode)?._swiftObject else {
             fatalError("Attributes must have a name!")
         }
-
-        name.cString(using: .utf8)!.withUnsafeBufferPointer() {
-            guard let ptr = $0.baseAddress, _CFXMLNodeHasProp(_xmlNode, ptr) == nil else { return }
+        name.withCString {
+            guard _CFXMLNodeHasProp(_xmlNode, $0) == nil else { return }
             addChild(attribute)
         }
     }
